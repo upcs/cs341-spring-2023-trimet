@@ -4,7 +4,7 @@ h1 {
 
 body{
 	background: url() no-repeat center center fixed;
-	font-family: 'Jazz LET', fantasy;
+	font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .grid-container {
@@ -18,6 +18,11 @@ body{
 
 .border {
 
+}
+
+img {
+    max-width:100%;
+    height:auto;
 }
 
 
