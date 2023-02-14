@@ -6,6 +6,12 @@ h1 {
 body{
 	display: grid;
 	grid-template-columns: 20% 80%;
+	background: url() no-repeat center center fixed;
+	-webkit-background-size: cover;
+	-moz-background-size: cover;
+	-o-background-size: cover;
+	background-size: cover;
+	font-family: 'Jazz LET', fantasy;
 }
 
 p{
