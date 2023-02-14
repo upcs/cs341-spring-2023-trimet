@@ -1,4 +1,15 @@
 h1 {
+	grid-column-start: 2;
 	text-align: center;
 }
 
+body{
+	display: grid;
+	grid-template-columns: 20% 80%;
+}
+
+p{
+	grid-column-start: 2;
+	align-content: center;
+	justify-content: center;
+}
