@@ -1,31 +1,44 @@
-h1 {
-	text-align: center;
-}
-
 body{
-	background: url() no-repeat center center fixed;
 	font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+	background-color: lavender;
 }
 
 .grid-container {
 	display: grid;
 	grid-template-columns: 20% 80%;
-}
-
-.grid-item {
-	text-align: center;
-}
-
-div {
 	box-sizing: border-box;
     border: 10px solid black;
     margin: 10px;
+}
 
+.grid-item-1 {
+	text-align: center;
+	background-color:lightcyan;
+	box-sizing: border-box;
+    border: 10px solid black;
+    margin: 10px;
+}
+
+.grid-item-2 {
+	text-align: center;
+	background-color:white;
+	box-sizing: border-box;
+    border: 10px solid black;
+    margin: 10px;
 }
 
 img {
-    max-width:100%;
+    max-width:78%;
     height:auto;
 }
 
-
+.top-bar {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: space-between;
+	background: linear-gradient(to left, lightblue, darkcyan);
+	color: white;
+	height: 50px;
+	padding: 1em;
+}
