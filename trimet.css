@@ -16,7 +16,10 @@ body{
 	text-align: center;
 }
 
-.border {
+div {
+	box-sizing: border-box;
+    border: 10px solid black;
+    margin: 10px;
 
 }
 
