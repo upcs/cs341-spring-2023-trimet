@@ -1,0 +1,37 @@
+<!doctype html>
+<html>
+	<head>
+		<title>TriMet TravelMap</title>
+
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+		<link rel="stylesheet" href="/stylesheets/style.css" />
+		<link rel="stylesheet" href="/ol/ol.css" />
+
+		<script defer src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+		<script defer type="module" src="/javascripts/main.js"></script>
+	</head>
+	<body>
+		<section class="top-bar">
+			<div>
+				<h1>TriMet TravelMap</h1>
+			</div>
+		</section>
+
+		<div class="menu btn2" data-menu="2">
+			<div class="icon"></div>
+		</div>
+
+		<div class="grid-container">
+			<div class="grid-item-1">
+				<input type="text" id="searchbar" placeholder="Search For Buses Here"></input>
+				<br>
+				<h3>Schedule</h3>
+			</div>
+			<div class="grid-item-2">
+				<div id="map"></div>
+			</div>
+		</div>
+	</body>
+</html>
