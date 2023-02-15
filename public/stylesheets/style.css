@@ -1,6 +1,7 @@
 body {
 	font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 	background-color: lavender;
+	
 }
 
 .grid-container {
@@ -9,6 +10,7 @@ body {
 	box-sizing: border-box;
 	border: 10px solid black;
 	margin: 10px;
+	height: 80vh;
 }
 
 .grid-item-1 {
@@ -39,8 +41,8 @@ img {
 	justify-content: space-between;
 	background: linear-gradient(to left, lightblue, darkcyan);
 	color: white;
-	height: 50px;
 	padding: 1em;
+	height: 5vh;
 }
 
 #map {
