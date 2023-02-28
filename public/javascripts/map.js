@@ -1,5 +1,5 @@
 import Map from "/ol/Map.js";
-import OSM from "/ol/source/OSM.js";
+import XYZ from "/ol/source/XYZ.js";
 import TileLayer from "/ol/layer/Tile.js";
 import View from "/ol/View.js";
 import {fromLonLat} from "/ol/proj.js";
@@ -8,7 +8,9 @@ const map = new Map({
 	target: "map",
 	layers: [
 		new TileLayer({
-			source: new OSM(),
+			source: new XYZ({
+				url: "https://tiles.trimet.org/styles/trimet/{z}/{x}/{y}.png"
+			}),
 		}),
 	],
 	view: new View({
