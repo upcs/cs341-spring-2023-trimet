@@ -6,14 +6,25 @@
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 
+		<!-- Load both our CSS file and the one for OpenLayers. -->
 		<link rel="stylesheet" href="/stylesheets/style.css" />
 		<link rel="stylesheet" href="/ol/ol.css" />
 
+		<!-- Before any other scripts, load jQuery. -->
 		<script defer src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
-		<script defer type="module" src="/javascripts/main.js"></script>
-		<script
-	src="/javascripts/hamburger.js">
-</script>
+
+		<!--
+			OpenLayers uses modules, but we want to avoid using those in the
+			rest of our code. However, since module and non-module code can't
+			be mixed, we import all the modules we need from OpenLayers into
+			the global namespace.
+		-->
+		<script defer type="module" src="/javascripts/importModules.js"></script>
+
+		<!-- Then, we can commence loading our scripts in order of usage. -->
+		<script defer src="/javascripts/fetch.js"></script>
+		<script defer src="/javascripts/map.js"></script>
+		<script defer src="/javascripts/interaction.js"></script>
 	</head>
 	<body>
 		<section class="top-bar">
@@ -33,7 +44,7 @@
 					<li><a href="#">Service Alerts</a></li>
 					<li><a href="#">About</a></li>
 				</ul>
-				</nav> 
+				</nav>
 			</div>
 			<div class="menu-bg" id="menu-bg"></div>
 		</div>
