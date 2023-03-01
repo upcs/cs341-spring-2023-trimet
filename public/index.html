@@ -11,9 +11,8 @@
 
 		<script defer src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
 		<script defer type="module" src="/javascripts/main.js"></script>
-		<script
-	src="/javascripts/hamburger.js">
-</script>
+		<script src="/javascripts/hamburger.js"></script>
+		<script src="/javascripts/alerts.js"></script>
 	</head>
 	<body>
 		<section class="top-bar">
@@ -30,7 +29,7 @@
 				<nav class="nav" id="nav">
 				<ul>
 					<li><a href="#">How-To</a></li>
-					<li><a href="#">Service Alerts</a></li>
+					<li><a href="#" id="service-alerts" onclick="alertsPopupOnClick()">Service Alerts</a></li>
 					<li><a href="#">About</a></li>
 				</ul>
 				</nav> 
@@ -47,6 +46,12 @@
 			</div>
 			<div class="grid-item-2">
 				<div id="map"></div>
+			</div>
+			<div id="alerts-window">
+				<div id="alerts-box">
+					<h2>Alerts</h2>
+					<button id="close" onclick="exitAlertsOnClick()">&times;</button>
+				</div>
 			</div>
 		</div>
 	</body>
