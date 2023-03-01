@@ -29,9 +29,21 @@ body {
 	margin: 10px;
 }
 
-img {
-	max-width:78%;
-	height:auto;
+#overlay{ 
+	text-align: center;
+	padding-top: 20%;
+	font-size: 50px;
+	position: fixed; /* Sit on top of the page content */
+	display: none; /* Hidden by default */
+	width: 100%; /* Full width (cover the whole page) */
+	height: 100%; /* Full height (cover the whole page) */
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: rgba(0,0,0,0.5); /* Black background with opacity */
+	z-index: 2; /* Specify a stack order in case you're using a different order for other elements */
+	cursor: pointer; /* Add a pointer on hover */
 }
 
 .top-bar {
@@ -113,9 +125,10 @@ img {
 	z-index: 2;
 	width: 0;
 	height: 0;
-	margin: 30px 0 20px 20px;
-	background: radial-gradient(circle, #DC052D, #DC052D);
-	border-radius: 10%;
+	margin: 0px 0 0px 0px;
+	border-bottom-left-radius: 20%;
+	border-top-left-radius: 20%;
+	background: #DC052D;
 	transition: 0.3s ease;
   }
   
@@ -140,7 +153,7 @@ img {
   }
   
   .change-bg {
-	width: 520px;
-	height: 460px;
-	transform: translate(60%,-30%);
+	width: 200px;
+	height:350px;
+	transform: translate(0%,-10%);
   }
