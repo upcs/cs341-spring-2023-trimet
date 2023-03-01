@@ -3,7 +3,7 @@
 // The app ID for accessing the live TriMet APIs. There's no point in hiding
 // this constant since it's placed directly in the GET query string, and
 // therefore is available for anyone to see.
-const APP_ID = "DB9C2B0467902CB970AD9CD6B";
+var APP_ID = "DB9C2B0467902CB970AD9CD6B";
 
 /**
  * Given a base URL and a set of key-value pairs, returns a new URL made of the
@@ -23,40 +23,56 @@ function makeAppUrl(url, params) {
 }
 
 /**
- * Fetches a file from an external URL, calling functions for success or error.
- * The data can be interpreted as either text or JSON.
+ * Fetches a file from an external URL and returns a promise. For the time
+ * being, callback functions for success and error are also called for
+ * resolving and rejecting of the promise, respectively. If these are provided,
+ * the promise will never resolve or reject.
  *
- * Also see fetchText() and fetchJson() for function alternatives with simpler
- * call signatures.
+ * The data can be interpreted as text, JSON, or XML.
+ *
+ * Also see fetchText(), fetchJson(), and fetchXml() for function alternatives
+ * with simpler call signatures.
  *
  * @param url       The URL to fetch the text file from.
  * @param dataType  Determines how to interpret the fetched data. Can be either
  *                  "text" for a string, "json" for a JavaScript object, or
  *                  "xml" for a XML document tree.
- * @param onSuccess The function to call on success. The fetched string/object
+ * @param onSuccess (optional) The function to call on success. The fetched
+ *                  string/object will be passed as the sole argument.
+ * @param onError   (optional) The function to call on error. The error status
  *                  will be passed as the sole argument.
- * @param onError   The function to call on error. The error status will be
- *                  passed as the sole argument.
  */
 function fetchData(url, dataType, onSuccess, onError) {
-	$.ajax({
-		// Fetch the URL as a raw text file with a two second timeout to avoid
-		// waiting forever.
-		url: url,
-		dataType: dataType,
-		timeout: 2000,
+	return new Promise((resolve, reject) => {
+		$.ajax({
+			// Fetch the URL as a raw text file with a two second timeout to avoid
+			// waiting forever.
+			url: url,
+			dataType: dataType,
+			timeout: 2000,
 
-		// On success, pass the text directly to the success handler.
-		success: (data, statusCode, xhr) => {
-			onSuccess(data);
-		},
+			// On success, pass the text directly to the success handler.
+			success: (data, statusCode, xhr) => {
+				if (onSuccess) {
+					onSuccess(data);
+				} else {
+					resolve(data);
+				}
+			},
 
-		// On error, call the error handler with error information combined
-		// into a single string, namely the URL, status summary, and status
-		// code.
-		error: (xhr, textStatus, statusCode) => {
-			onError(`Fetch "${url}" (${textStatus}) ${statusCode}`);
-		},
+			// On error, call the error handler with error information combined
+			// into a single string, namely the URL, status summary, and status
+			// code.
+			error: (xhr, textStatus, statusCode) => {
+				const error = `Fetch "${url}" (${textStatus}) ${statusCode}`;
+
+				if (onError) {
+					onError(error);
+				} else {
+					reject(error);
+				}
+			},
+		});
 	});
 }
 

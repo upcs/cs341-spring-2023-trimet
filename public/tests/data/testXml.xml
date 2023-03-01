@@ -1,0 +1,6 @@
+<root>
+	<has-attr attr="value" />
+	<has-subchildren>
+		<has-text>Hello world</has-text>
+	</has-subchildren>
+</root>
