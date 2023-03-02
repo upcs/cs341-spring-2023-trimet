@@ -28,16 +28,18 @@
 				</div>
 				<nav class="nav" id="nav">
 				<ul>
-					<li><a href="#">How-To</a></li>
-					<li><a href="#" id="service-alerts" onclick="alertsPopupOnClick()">Service Alerts</a></li>
-					<li><a href="#">About</a></li>
+					<li onclick="on()">How-To</li>
+					<li id="service-alerts" onclick="alertsPopupOnClick()">Service Alerts</li>
+					<li>About</li>
 				</ul>
 				</nav> 
 			</div>
 			<div class="menu-bg" id="menu-bg"></div>
 		</div>
 		</section>
-
+		<div id="overlay" onclick="off()">
+			<div id="text">Overlay Text</div>
+		  </div>
 		<div class="grid-container">
 			<div class="grid-item-1">
 				<input type="text" id="searchbar" placeholder="Search For Buses Here"></input>
@@ -49,8 +51,8 @@
 			</div>
 			<div id="alerts-window">
 				<div id="alerts-box">
-					<h2>Alerts</h2>
 					<button id="close" onclick="exitAlertsOnClick()">&times;</button>
+					<h2>Alerts</h2>
 				</div>
 			</div>
 		</div>
