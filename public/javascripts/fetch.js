@@ -100,25 +100,30 @@ function fetchAppXml(url, params, onSuccess, onError) {
 	return fetchXml(makeAppUrl(url, params), onSuccess, onError);
 }
 
-
+// source: https://www.w3schools.com/xml/ajax_applications.asp
+// printRedTable is identical, just for red line.
 function printBlueTable() {
+	//Grabs data from routeConfig, which "Retrieves a list of routes being reported by TransitTracker from the active schedule"
+	//Currently shows stops and direction it's going
 	fetchAppXml("https://developer.trimet.org/ws/V1/routeConfig", {stops: true, dir: true}, function(xml) {
 		var i;
 		var xmlDoc = xml.documentElement;
+		//dir element stands for "direction"
 		var dest = xmlDoc.getElementsByTagName("dir");
+		//Shows data in 2 columns, and aligns proper stops with the direction its going in.
 		var dest0Stops = dest[0].getElementsByTagName("stop");
 		var dest1Stops = dest[1].getElementsByTagName("stop");
 		var table = "<tr><th>" + dest[0].getAttribute("desc") + "</th><th>"
 		+ dest[1].getAttribute("desc") + "</th></tr>";
-
+		//Shows the Stops for the respective destination.
 		for (i = 0; i < dest0Stops.length; i++) {
 			table += "<tr><td>" + dest0Stops[i].getAttribute("desc") + "</td>";
 			table += "<td>" + dest1Stops[i].getAttribute("desc") + "</td></tr>";
 
 		}
-
+		//updates the table
 		document.getElementById("lineTable").innerHTML = table;
-
+		//Simply throws an error msg in the log is there's something wrong.
 	}, function(status) {
     	console.log("We got an error: " + status);
 	});	
@@ -147,7 +152,16 @@ function  printRedTable() {
 	});	
 }
 
-
+//Interacts with minimize/show button. Changes text on button and either hids or shows.
+//Must work on this to be exactly what group wants. ASK THE GROUP.
 function hideLineTable() {
-	$("#lineTable").hide();
+	//var last = $.data(txtbox_1, "last");
+	if ($('#minimizeBtn').text() == "Minimize Table"){	
+		$("#minimizeBtn").text("Show Table");
+		$("#lineTable").hide();
+	}
+	else{
+		$("#minimizeBtn").text("Minimize Table");
+		$("#lineTable").show();
+	}
 }
