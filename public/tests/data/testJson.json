@@ -1,0 +1,10 @@
+{
+	"null": null,
+	"boolean": true,
+	"number": 5,
+	"string": "hello world",
+	"array": [1, 2, 3],
+	"object": {
+		"key": "value"
+	}
+}
