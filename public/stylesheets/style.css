@@ -62,28 +62,23 @@ img {
 	right: 0;
 	bottom: 0;
 	background-color: rgba(0,0,0,0.5);
-	z-index: 2;
+	z-index: 1;
 	cursor: pointer;
+}
+
+#close {
+	float: right;
+	margin-right: 10px;
+	margin-top: 10px;
+	cursor: pointer;
+	font-weight: bold;
 }
 
 #alerts-box {
 	background-color: #0855ae;
-	margin: 10% auto;
+	margin: 15% auto;
 	width: 50%;
 	height: 50%;
-}
-
-.alertsOkayBtn {
-	display: block;
-    width: 150px;
-    position: relative;
-    margin: 10px auto;
-    text-align: center;
-    background-color: #0f72e5;
-    border-radius: 20px;
-    color: #ffffff;
-    text-decoration: none;
-    padding: 8px 0;
 }
 
 .alerts-window button{
@@ -120,29 +115,29 @@ img {
 	border-radius: 5px;
 	transition: 0.3s ease;
 }
-  
+
 #bar1 {
 	transform: translateY(-4px);
 }
-  
+
 #bar3 {
 	transform: translateY(4px);
 }
-  
+
 .nav {
 	transition: 0.3s ease;
 	display: none;
 }
-  
+
 .nav ul {
 	padding: 0 15px;
 }
-  
+
 .nav li {
 	list-style: none;
 	padding: 12px 0;
 }
-  
+
 .nav li a {
 	color: white;
 	font-size: 20px;
