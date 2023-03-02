@@ -12,11 +12,9 @@
 
 		<!-- Before any other scripts, load our dependencies. -->
 		<script defer src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
-<<<<<<< HEAD
 		<script defer type="module" src="/javascripts/main.js"></script>
 		<script src="/javascripts/hamburger.js"></script>
 		<script src="/javascripts/alerts.js"></script>
-=======
 
 		<!--
 			OpenLayers uses modules, but we want to avoid using those in the
@@ -32,7 +30,6 @@
 		<script defer src="/javascripts/interaction.js"></script>
 		<script src="/javascripts/table.js"></script>
 
->>>>>>> fb0a24a2102242681e0b2a6c6d31538f322bf768
 	</head>
 	<body>
 		<section class="top-bar">
@@ -49,7 +46,7 @@
 				<nav class="nav" id="nav">
 				<ul>
 					<li onclick="on()">How-To</li>
-					<li id="service-alerts" onclick="alertsPopupOnClick()">Service Alerts</li>
+					<li id="service-alerts" onclick="alertsPopupOnClick(); printAlertsTable()">Service Alerts</li>
 					<li>About</li>
 				</ul>
 				</nav>
@@ -57,13 +54,10 @@
 			<div class="menu-bg" id="menu-bg"></div>
 		</div>
 		</section>
-<<<<<<< HEAD
 		<div id="overlay" onclick="off()">
 			<div id="text">Overlay Text</div>
 		  </div>
-=======
 		
->>>>>>> fb0a24a2102242681e0b2a6c6d31538f322bf768
 		<div class="grid-container">
 				<!--This currently contains the visualization table. Only good right now 
 					For showing the blue and red lines. We will need to bulk this out. Also, 
@@ -94,6 +88,9 @@
 				<div id="alerts-box">
 					<button id="close" onclick="exitAlertsOnClick()">&times;</button>
 					<h2>Alerts</h2>
+					<div class="scrollable-div">
+						<table id="alerts-table" class="table-border"></table>
+					</div>
 				</div>
 			</div>
 		</div>

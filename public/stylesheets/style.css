@@ -89,7 +89,6 @@ th, td {
 	bottom: 0;
 	background-color: rgba(0,0,0,0.5);
 	z-index: 1;
-	cursor: pointer;
 }
 
 #close {
@@ -107,18 +106,13 @@ th, td {
 	height: 50%;
 }
 
-.alerts-window button{
-    margin:  0 0 20px auto;
-    background-color: transparent;
-    font-size: 30px;
-    color: #ffffff;
-    background: #03549a;
-    border-radius: 100%;
-    width: 40px;
-    height: 40px;
-    border: none;
-    outline: none;
-    cursor: pointer;
+.alerts-table {
+	text-align: center;
+	background-color:lightcyan;
+	box-sizing: border-box;
+	border: 10px solid black;
+	margin: 10px;
+	overflow-x: auto;
 }
 
 /*Menu code courtesy of https://alvarotrigo.com/blog/hamburger-menu-css/*/
