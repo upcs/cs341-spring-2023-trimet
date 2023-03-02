@@ -28,18 +28,15 @@
 				</div>
 				<nav class="nav" id="nav">
 				<ul>
-					<li onclick="on()">How-To</li>
-					<li id="service-alerts" onclick="alertsPopupOnClick()">Service Alerts</li>
-					<li>About</li>
+					<li onclick="howToPopupOnClick()">How-To</li>
+					<li onclick="alertsPopupOnClick()">Service Alerts</li>
+					<li onclick="aboutPopupOnClick()">About</li>
 				</ul>
-				</nav> 
+				</nav>
 			</div>
 			<div class="menu-bg" id="menu-bg"></div>
 		</div>
 		</section>
-		<div id="overlay" onclick="off()">
-			<div id="text">Overlay Text</div>
-		  </div>
 		<div class="grid-container">
 			<div class="grid-item-1">
 				<input type="text" id="searchbar" placeholder="Search For Buses Here"></input>
@@ -53,6 +50,42 @@
 				<div id="alerts-box">
 					<button id="close" onclick="exitAlertsOnClick()">&times;</button>
 					<h2>Alerts</h2>
+				</div>
+			</div>
+			<div id="how-to-window">
+				<div id="how-to-box">
+					<button id="close" onclick="exitHowToOnClick()">&times;</button>
+					<h2>How-To</h2>
+					<div class="info">
+						<ul>
+							<li>
+								Navigate the map by clicking with your mouse and 
+								dragging across the screen. Use the scroll wheel or zoom buttons
+								to zoom in or out of the map for more or less detail.
+							</li>
+							<li>
+								Click the route you are interested in to see the stops along the way.
+							</li>
+							<li>
+								Click "Service Alerts" to get information about any changes to operations.
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<div id="about-window">
+				<div id="about-box">
+					<button id="close" onclick="exitAboutOnClick()">&times;</button>
+					<h2>About</h2>
+					<div class="info">
+						<p>This website was developed by a group of University of Portland students for CS 341: Software Engineering
+						and was submitted as their semester assignment. This application is not endorsed by TriMet. To learn more about
+						Portland's official public transit system, visit:
+						<a href="https://trimet.org/home/" target="_blank" rel="noopener noreferrer">https://trimet.org/home/</a>
+						To learn more about developing applications using TriMet's data, visit:
+						<a href = "https://developer.trimet.org/" target="_blank" rel="noopener noreferrer">https://developer.trimet.org/</a>
+						</p>
+					</div>
 				</div>
 			</div>
 		</div>

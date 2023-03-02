@@ -1,8 +1,28 @@
 function exitAlertsOnClick() {
 	$('#alerts-window').hide();
-	console.log("Alerts window closed");
 }
 function alertsPopupOnClick() {
 	$('#alerts-window').show();
-	console.log("Alerts window popped up");
+	$('#how-to-window').hide();
+	$('#about-window').hide();
+}
+
+function howToPopupOnClick(){
+	$('#how-to-window').show();
+	$('#alerts-window').hide();
+	$('#about-window').hide();
+}
+
+function exitHowToOnClick(){
+	$('#how-to-window').hide();
+}
+
+function aboutPopupOnClick(){
+	$('#about-window').show();
+	$('#how-to-window').hide();
+	$('#alerts-window').hide();
+}
+
+function exitAboutOnClick(){
+	$('#about-window').hide();
 }
