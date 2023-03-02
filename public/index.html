@@ -6,13 +6,33 @@
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 
+		<!-- Load both our CSS file and the one for OpenLayers. -->
 		<link rel="stylesheet" href="/stylesheets/style.css" />
 		<link rel="stylesheet" href="/ol/ol.css" />
 
+		<!-- Before any other scripts, load our dependencies. -->
 		<script defer src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+<<<<<<< HEAD
 		<script defer type="module" src="/javascripts/main.js"></script>
 		<script src="/javascripts/hamburger.js"></script>
 		<script src="/javascripts/alerts.js"></script>
+=======
+
+		<!--
+			OpenLayers uses modules, but we want to avoid using those in the
+			rest of our code. However, since module and non-module code can't
+			be mixed, we import all the modules we need from OpenLayers into
+			the global namespace.
+		-->
+		<script defer type="module" src="/javascripts/importModules.js"></script>
+
+		<!-- Then, we can commence loading our scripts in order of usage. -->
+		<script defer src="/javascripts/fetch.js"></script>
+		<script defer src="/javascripts/map.js"></script>
+		<script defer src="/javascripts/interaction.js"></script>
+		<script src="/javascripts/table.js"></script>
+
+>>>>>>> fb0a24a2102242681e0b2a6c6d31538f322bf768
 	</head>
 	<body>
 		<section class="top-bar">
@@ -32,19 +52,40 @@
 					<li id="service-alerts" onclick="alertsPopupOnClick()">Service Alerts</li>
 					<li>About</li>
 				</ul>
-				</nav> 
+				</nav>
 			</div>
 			<div class="menu-bg" id="menu-bg"></div>
 		</div>
 		</section>
+<<<<<<< HEAD
 		<div id="overlay" onclick="off()">
 			<div id="text">Overlay Text</div>
 		  </div>
+=======
+		
+>>>>>>> fb0a24a2102242681e0b2a6c6d31538f322bf768
 		<div class="grid-container">
+				<!--This currently contains the visualization table. Only good right now 
+					For showing the blue and red lines. We will need to bulk this out. Also, 
+					we may want to update the "click" events to purely happenin the js files. 
+					But for now it's ok.
+				-->
 			<div class="grid-item-1">
 				<input type="text" id="searchbar" placeholder="Search For Buses Here"></input>
 				<br>
 				<h3>Schedule</h3>
+				<br>
+				<!-- Three buttons, self explanatory. One minimizes or shows the table, depending on what's there.
+					 The other two buttons show either the red or blue line. 
+					 
+				-->
+				<button id="minimizeBtn" type="button" onClick="hideLineTable()">Show Table</button>
+				<button type="button" onClick="printBlueTable()">MAX Blue</button>
+				<button type="button" onClick="printRedTable()">MAX Red</button>
+				<br>
+				<!--Table element that shows all the line data. -->
+				<table id="lineTable" class="table-border"></table>
+			<!--	possibly delete, just here for record keeping: <table id="redLine" class="table-border"></table> -->
 			</div>
 			<div class="grid-item-2">
 				<div id="map"></div>
