@@ -154,15 +154,13 @@ body {
 	color: white;
 	font-size: 20px;
 	text-decoration: none;
+	font-weight:bold;
 }
   
-<<<<<<< HEAD
-  .nav li:hover {
-=======
-.nav li a:hover {
->>>>>>> origin/silliman25-alerts-window
-	font-weight: bold;
+.nav li:hover {
+	cursor: pointer; /* Add a pointer on hover */
 }
+
   
 .menu-bg, #menu {
 	top: 0;
@@ -201,16 +199,13 @@ body {
 	transform: translateY(-6px) rotateZ(45deg);
 }
   
-<<<<<<< HEAD
   .change-bg {
 	width: 200px;
 	height:350px;
 	transform: translate(0%,-10%);
   }
-=======
 .change-bg {
-	width: 520px;
-	height: 460px;
-	transform: translate(60%,-30%);
+	width: 200px;
+	height: 400px;
+	transform: translate(0%,-30%);
 }
->>>>>>> origin/silliman25-alerts-window
