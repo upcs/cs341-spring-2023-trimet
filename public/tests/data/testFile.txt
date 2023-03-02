@@ -1,0 +1,4 @@
+X
+This is an example file.
+Isn't this something else?
+Wow!
