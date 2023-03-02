@@ -117,7 +117,7 @@ function printBlueTable() {
 
 		}
 
-		document.getElementById("blueLine").innerHTML = table;
+		document.getElementById("lineTable").innerHTML = table;
 
 	}, function(status) {
     	console.log("We got an error: " + status);
@@ -140,9 +140,14 @@ function  printRedTable() {
 
 		}
 
-		document.getElementById("redLine").innerHTML = table;
+		document.getElementById("lineTable").innerHTML = table;
 
 	}, function(status) {
 		console.log("We got an error: " + status);
 	});	
+}
+
+
+function hideLineTable() {
+	$("#lineTable").hide();
 }
