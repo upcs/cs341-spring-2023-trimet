@@ -12,6 +12,9 @@
 
 		<!-- Before any other scripts, load our dependencies. -->
 		<script defer src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+		<script defer type="module" src="/javascripts/main.js"></script>
+		<script src="/javascripts/hamburger.js"></script>
+		<script src="/javascripts/alerts.js"></script>
 
 		<!--
 			OpenLayers uses modules, but we want to avoid using those in the
@@ -42,15 +45,18 @@
 				</div>
 				<nav class="nav" id="nav">
 				<ul>
-					<li><a href="#">How-To</a></li>
-					<li><a href="#">Service Alerts</a></li>
-					<li><a href="#">About</a></li>
+					<li onclick="on()">How-To</li>
+					<li id="service-alerts" onclick="alertsPopupOnClick(); printAlertsTable()">Service Alerts</li>
+					<li>About</li>
 				</ul>
 				</nav>
 			</div>
 			<div class="menu-bg" id="menu-bg"></div>
 		</div>
 		</section>
+		<div id="overlay" onclick="off()">
+			<div id="text">Overlay Text</div>
+		  </div>
 		
 		<div class="grid-container">
 				<!--This currently contains the visualization table. Only good right now 
@@ -77,6 +83,15 @@
 			</div>
 			<div class="grid-item-2">
 				<div id="map"></div>
+			</div>
+			<div id="alerts-window">
+				<div id="alerts-box">
+					<button id="close" onclick="exitAlertsOnClick()">&times;</button>
+					<h2>Alerts</h2>
+					<div id="scrollable-alerts">
+						<table id="alerts-table" class="table-border"></table>
+					</div>
+				</div>
 			</div>
 		</div>
 	</body>
