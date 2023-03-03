@@ -47,7 +47,7 @@ text = some string goes here
 	"desc":"text"
 }
 
-important tags: i = index
+important tags: i = index, 0 is by default but not always correct
 json.resultSet.alert[i].route[0].desc
 json.resultSet.alert[i].begin (begin is in unix time format)
 json.resultSet.alert[i].desc
@@ -59,49 +59,66 @@ function  printAlertsTable() {
 
 		//list of all alerts (idk if there is any specific order)
 		var alerts = json.resultSet.alert;
-		//route # - transic vehical name, alerts description, start time
-		var name = alerts[0].route[0].desc;
-		var desc = alerts[0].desc;
-		//convert unix to date month year hour min sec;
-		var unix = alerts[0].begin;
-		//unix conversion courtesy of shomrat/pitust on StackOverflow
-		//https://stackoverflow.com/questions/847185/convert-a-unix-timestamp-to-time-in-javascript
-		//I have commented out the year & sec because they either didn't format right or were unnecessary
+		//make table to show the alerts list
+		var table = "";
+		//for the unix to timestamp conversion
 		var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-		var a = new Date(unix * 1000);
-		//var year = a.getFullYear();
-		var month = months[a.getMonth()];
-  		var date = a.getDate();
-		var hour = a.getHours();
-		var min = "0" + a.getMinutes();
-		//var sec = "0" + a.getSeconds();
-		var time = date + ' ' + month + ' '/* + year + ' '*/ + hour + ':' + min /*+ ':' + sec*/;
+		var name = "";
 
-		//make table to show the alerts list and give it alert 1 
-		//TODO: will cause error if there are zero service alerts
-		var table = "<tr><th>" + name + 
-					"</th><th>" + time + 
-					"</th><th>"+ desc + "</th></tr>";
+		var desc;
+		var unix;
+		var date;
+		var am = true;
 
-		/*for (i = 0; i < alerts.length; i++) {
-			//get vals
-			//route # - transic vehical name, alerts description, start time
-			name = alerts[i].route[h].desc;
+		//comment out this for loop to just print the first alert
+		for (var i = 0; i < alerts.length; i++) {
 			//apparently the format varies so this is necessary
-			if(alerts[i].route.length > 1){
-				for(h = 1; i < alerts[i].route.length; h++){
+			name = "";//reset name
+			if(alerts[i].route.length > 0){//TODO: this is always false
+				//route #/name - transit vehical name
+				for(var h = 0; h < alerts[i].route.length; h++){
 					name += alerts[i].route[h].desc;
 				}
+			}
+			//alert description
+			var desc = alerts[i].desc;
+			//alert active at date/time
+			var unix = alerts[i].begin;
+			//unix conversion from shomrat/pitust on StackOverflow
+			//https://stackoverflow.com/questions/847185/convert-a-unix-timestamp-to-time-in-javascript
+			var date = new Date(unix * 1000);
+			//if getMin is nums 0-9 then print it out like this 00-09
+			if(date.getMinutes() < 10){
+				min = '0' + date.getMinutes();
+			}
+			if(date.getHours() == 0){
+				hour = 12;
+				am = true;
+			} else if(date.getHours() < 10){
+				hour = '0' + date.getHours();
+			}//if single digit add leading '0'
+			if(date.getHours() > 12){
+				hour = date.getHours() - 12;
+				am = false;
+			}//convert to am/pm from 24 hr format
+			time = date.getDate() + ' ' + 
+					months[date.getMonth()] + ' '+ 
+					hour + ':' + 
+					min;
+			//add am/pm to end of time
+			if(am){
+				time += " am";
+			} else {
+				time += " pm";
 			}
 
 			//create table format
 			table += "<tr>"
 			table += "<td>" + name + "</td>";
+			table += "<td>" + time + "</td>";
 			table += "<td>" + desc + "</td>";
-			table += "<td>" + begin + "</td>";
 			table += "</tr>";
-			console.log(i);
-		}*/
+		}
 
 		document.getElementById("alerts-table").innerHTML = table;
 

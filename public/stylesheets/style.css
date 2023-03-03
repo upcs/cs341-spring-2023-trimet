@@ -101,18 +101,18 @@ th, td {
 
 #alerts-box {
 	background-color: #0855ae;
-	margin: 15% auto;
-	width: 50%;
-	height: 50%;
+	margin: 5% auto;
+	width: 60%;
+	height: 65%;
+	overflow: auto;
 }
 
 .alerts-table {
 	text-align: center;
 	background-color:lightcyan;
-	box-sizing: border-box;
+	box-sizing: inherit;
 	border: 10px solid black;
 	margin: 10px;
-	overflow-x: auto;
 }
 
 /*Menu code courtesy of https://alvarotrigo.com/blog/hamburger-menu-css/*/
