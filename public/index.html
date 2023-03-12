@@ -68,8 +68,10 @@
 					 
 				-->
 				<button id="minimizeBtn" type="button" onClick="hideLineTable()">Show Table</button>
-				<button type="button" onClick="printBlueTable()">MAX Blue</button>
-				<button type="button" onClick="printRedTable()">MAX Red</button>
+				<button type="button" onClick="fetchStops('MAX Blue Line')">MAX Blue</button>
+				<button type="button" onClick="fetchStops('MAX Red Line')">MAX Red</button>
+				<button type="button" onClick="fetchStops('MAX Green Line')">MAX Green</button>
+				<button type="button" onClick="fetchStops('MAX Orange Line')">MAX Orange</button>
 				<br>
 				<!--Table element that shows all the line data. -->
 				<table id="lineTable" class="table-border"></table>
