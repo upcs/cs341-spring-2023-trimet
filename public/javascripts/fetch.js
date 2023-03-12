@@ -129,6 +129,8 @@ function fetchAppXml(url, params, onSuccess, onError) {
  */
 
 function fetchStops(busName) {
+	var justry = $(this).text();
+	console.log(justry);
 	fetchAppXml("https://developer.trimet.org/ws/V1/routeConfig", {stops: true, dir: true}, function(xml) {
 		var i, k, highestStops, busNum;
 		var xmlDoc = xml.documentElement;
@@ -178,7 +180,7 @@ function fetchStops(busName) {
 		}
 
 		document.getElementById("lineTable").innerHTML = table;
-		$(this).hide();
+		
 
 	},
 	function(status) {
