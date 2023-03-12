@@ -127,6 +127,7 @@ function fetchAppXml(url, params, onSuccess, onError) {
  * SIDE NOTE: Method currently puts data into a table format and prints it into the schedule div box. This will most likely be changed
  * in the future in order to better display data based on clicks from the map.
  */
+
 function fetchStops(busName) {
 	fetchAppXml("https://developer.trimet.org/ws/V1/routeConfig", {stops: true, dir: true}, function(xml) {
 		var i, k, highestStops, busNum;
@@ -177,9 +178,40 @@ function fetchStops(busName) {
 		}
 
 		document.getElementById("lineTable").innerHTML = table;
+		$(this).hide();
 
 	},
 	function(status) {
 		console.log("We got an error: " + status);
 	});
+}
+
+
+/**
+ * This function fetches all of the names of the routes that we need and displays them 
+ * inside of a table in the left menu.
+ */
+
+function fetchNames() {
+	fetchAppXml("https://developer.trimet.org/ws/V1/routeConfig", {stops: true, dir: true}, function(xml) {
+		var i, k, highestStops, busNum;
+		var xmlDoc = xml.documentElement;
+		var buses = xmlDoc.getElementsByTagName("route");
+		var nameArr = [];
+
+		//Fetches all of  the names
+		for (i = 0; i < buses.length; i++) {
+			nameArr[i] = buses[i].getAttribute("desc");
+		} 
+		var table;
+		//Creates table
+		for (k = 0; k < buses.length; k++) {
+			table += "<tr><td>" + nameArr[k] + "</td>";		
+		}
+		document.getElementById("lineTable").innerHTML = table;
+	},
+	function(status) {
+		console.log("We got an error: " + status);
+	});
+
 }
