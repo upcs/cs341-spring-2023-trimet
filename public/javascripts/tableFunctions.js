@@ -21,11 +21,12 @@ $(".line-button").on("click", function() {
 });
 
 function fetchStops(busName) {
-	
 	fetchAppXml("https://developer.trimet.org/ws/V1/routeConfig", {stops: true, dir: true}, function(xml) {
 		var i, k, highestStops, busNum;
 		var xmlDoc = xml.documentElement;
 		var buses = xmlDoc.getElementsByTagName("route");
+
+		console.log(busName);
 
 		//Goes through all available bus lines/ MAX rails in order to find data for given bus/MAX line
 		for (i = 0; i < buses.length; i++) {
@@ -33,40 +34,55 @@ function fetchStops(busName) {
 				busNum = i;
 			}
 		} 
+
+		//Gets destinations for a given form of transportation (always either 1 or 2 destinations)
 		var destinations = buses[busNum].getElementsByTagName("dir");
 
-		var table = "<tr><th>" + destinations[0].getAttribute("desc") + "</th><th>" +
-		destinations[1].getAttribute("desc") + "</th></tr>";
+		//Variables used within if statement declared outside so they can be stored.
+		var table, dest0Stops, dest1Stops;
 
-		
+		//Checks if there are 1 or 2 destinations. Makes table columns for amount of destinations 
+		//and prints stops along the way.
+		if (destinations[1] != null) {
+			table = "<tr><th>" + destinations[0].getAttribute("desc") + "</th><th>" +
+			destinations[1].getAttribute("desc") + "</th></tr>";
 
-		//Only 2 destinations for each of the busses/ MAX lines which is reason for hard coded 0 and 1 destinations
-		var dest0Stops = destinations[0].getElementsByTagName("stop");
-		var dest1Stops = destinations[1].getElementsByTagName("stop");
+			dest0Stops = destinations[0].getElementsByTagName("stop");
+			dest1Stops = destinations[1].getElementsByTagName("stop");
 
-		//Makes sure all stops are iterated through incase 1 destinations amount of stops is lower than another
-		if (dest0Stops.length >= dest1Stops.length) {
-			highestStops = dest0Stops.length;
+			//Makes sure all stops are iterated through incase 1 destinations amount of stops is lower than another
+			if (dest0Stops.length >= dest1Stops.length) {
+				highestStops = dest0Stops.length;
+			}
+			else {
+				highestStops = dest1Stops.length;
+			}
+
+			for (k = 0; k < highestStops; k++) {
+				//If k exceeds the amount of stops for a certain destination, prints an empty square in the table to prevent
+				//an out of bounds error.
+				if ((dest0Stops.length - 1) < k) {
+					table += "<tr><td>  </td>";
+				}
+				else {
+					table += "<tr><td>" + dest0Stops[k].getAttribute("desc") + "</td>";
+				}
+
+				if ((dest1Stops.length - 1) < k) {
+					table += "<td>  </td></tr>";
+				}
+				else {
+					table += "<td>" + dest1Stops[k].getAttribute("desc") + "</td></tr>";
+				}
+			}
 		}
 		else {
-			highestStops = dest1Stops.length;
-		}
+			table = "<tr><th>" + destinations[0].getAttribute("desc") + "</th></tr>";
 
-		for (k = 0; k < highestStops; k++) {
-			//If k exceeds the amount of stops for a certain destination, prints an empty square in the table to prevent
-			//an out of bounds error.
-			if ((dest0Stops.length - 1) < k) {
-				table += "<tr><td>  </td>";
-			}
-			else {
-				table += "<tr><td>" + dest0Stops[k].getAttribute("desc") + "</td>";
-			}
+			dest0Stops = destinations[0].getElementsByTagName("stop");
 
-			if ((dest1Stops.length - 1) < k) {
-				table += "<td>  </td></tr>";
-			}
-			else {
-				table += "<td>" + dest1Stops[k].getAttribute("desc") + "</td></tr>";
+			for (k = 0; k < dest0Stops.length; k++) {
+				table += "<tr><td>" + dest0Stops[k].getAttribute("desc") + "</td></tr>";
 			}
 		}
 
@@ -90,29 +106,39 @@ $("#showNames").on("click", function() {
 });
 
 function fetchNames() {
-	var justry = $(this).text();
-	console.log(justry);
+	//var justry = $(this).text();
+	//console.log(justry);
 
 	fetchAppXml("https://developer.trimet.org/ws/V1/routeConfig", {stops: true, dir: true}, function(xml) {
 		var i, k;
 		var xmlDoc = xml.documentElement;
 		var buses = xmlDoc.getElementsByTagName("route");
-		var nameArr = [];
+
+		var tempTable = "<tr><th> Transportation </th></tr>";
+
+		for (k = 0; k < buses.length; k++) {
+			tempTable += "<tr><td> </td></tr>";
+		}
+
+		document.getElementById('lineTable').innerHTML = tempTable;
+
+		var table = document.getElementById('lineTable');
+		var rows = table.rows;
 
 		//Fetches all of  the names
-		for (i = 0; i < buses.length; i++) {
-			nameArr[i] = buses[i].getAttribute("desc");
-		} 
-		var table;
-		//Creates table
-		for (k = 0; k < buses.length; k++) {
-			table += "<tr><td>" + nameArr[k] + "</td>";		
-		}
-		document.getElementById("lineTable").innerHTML = table;
+		for (i = 0; i < rows.length - 1; i++) {
+			var button = document.createElement('button');
+			button.innerText = buses[i].getAttribute("desc");
+			button.setAttribute('type', 'button');	
+			button.setAttribute('class', 'line-button'); 		
 
+			var cols = rows[i+1].cells;
+			var correctCol = rows[i+1]['cells'][cols.length - 1];
+
+			correctCol.appendChild(button);
+		}
 	},
 	function(status) {
 		console.log("We got an error: " + status);
 	});
-
 }
