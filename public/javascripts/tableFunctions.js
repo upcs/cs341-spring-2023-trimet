@@ -1,6 +1,8 @@
-var fetch = require("../javascripts/fetch");
-
+"use strict";
 /**
+ * A js file that interacts with the side table that displays information about the routes. 
+ * utilizes lots of fetch.js functions to grab data from trimet.
+////////////////////////////////////////////////////////////////////////////////////
  * source: https://www.w3schools.com/xml/ajax_applications.asp
  * 
  * Gets destinations (as well as each stop on the way) for the provided bus or MAX line using the function to fetch xml data from
@@ -12,11 +14,15 @@ var fetch = require("../javascripts/fetch");
  * in the future in order to better display data based on clicks from the map.
  */
 
+//Must, abolutely MUST use event handlers instead of onClick. Otherwise, "This" will simply not work.
+$(".line-button").on("click", function() {
+	var theBusName = $(this).text();
+	fetchStops(theBusName);
+});
+
 function fetchStops(busName) {
-	var justry = $(this).text();
-	console.log(justry);
 	
-	fetch.fetchAppXml("https://developer.trimet.org/ws/V1/routeConfig", {stops: true, dir: true}, function(xml) {
+	fetchAppXml("https://developer.trimet.org/ws/V1/routeConfig", {stops: true, dir: true}, function(xml) {
 		var i, k, highestStops, busNum;
 		var xmlDoc = xml.documentElement;
 		var buses = xmlDoc.getElementsByTagName("route");
@@ -79,10 +85,16 @@ function fetchStops(busName) {
  * inside of a table in the left menu.
  */
 
+$("#showNames").on("click", function() {
+	fetchNames();
+});
+
 function fetchNames() {
-	
-	fetch.fetchAppXml("https://developer.trimet.org/ws/V1/routeConfig", {stops: true, dir: true}, function(xml) {
-		var i, k, highestStops, busNum;
+	var justry = $(this).text();
+	console.log(justry);
+
+	fetchAppXml("https://developer.trimet.org/ws/V1/routeConfig", {stops: true, dir: true}, function(xml) {
+		var i, k;
 		var xmlDoc = xml.documentElement;
 		var buses = xmlDoc.getElementsByTagName("route");
 		var nameArr = [];
@@ -97,6 +109,7 @@ function fetchNames() {
 			table += "<tr><td>" + nameArr[k] + "</td>";		
 		}
 		document.getElementById("lineTable").innerHTML = table;
+
 	},
 	function(status) {
 		console.log("We got an error: " + status);

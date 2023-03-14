@@ -115,3 +115,5 @@ function fetchAppJson(url, params, onSuccess, onError) {
 function fetchAppXml(url, params, onSuccess, onError) {
 	return fetchXml(makeAppUrl(url, params), onSuccess, onError);
 }
+
+//module.exports = {fetchData:fetchData,fetchAppXml:fetchAppXml,fetchXml:fetchXml,fetchText:fetchText};

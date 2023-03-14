@@ -25,8 +25,8 @@
 		<script defer src="/javascripts/fetch.js"></script>
 		<script defer src="/javascripts/map.js"></script>
 		<script defer src="/javascripts/interaction.js"></script>
-		<script src="/javascripts/table.js"></script>
-		<script src="/javascripts/tableFunctions.js"></script>
+		<script defer src="/javascripts/table.js"></script>
+		<script defer src="/javascripts/tableFunctions.js"></script>
 
 	</head>
 	<body>
@@ -68,13 +68,13 @@
 					 The other two buttons show either the red or blue line. 
 					 
 				-->
-				<button id="minimizeBtn" type="button" onClick="hideLineTable()">Show Table</button>
-				<button id="showNames" type="button" onClick="fetchNames()">Show Names</button>
+				<button id="minimizeBtn" type="button">Show Table</button>
+				<button id="showNames" type="button">Show Names</button>
 
-				<button type="button" onClick="fetchStops('MAX Blue Line')">MAX Blue</button>
-				<button type="button" onClick="fetchStops('MAX Red Line')">MAX Red</button>
-				<button type="button" onClick="fetchStops('MAX Green Line')">MAX Green</button>
-				<button type="button" onClick="fetchStops('MAX Orange Line')">MAX Orange</button>
+				<button type="button" class="line-button">MAX Blue Line</button>
+				<button type="button" class="line-button">MAX Red Line</button>
+				<button type="button" class="line-button">MAX Green Line</button>
+				<button type="button" class="line-button">MAX Orange Line</button>
 				<br>
 				<!--Table element that shows all the line data. -->
 				<table id="lineTable" class="table-border"></table>
