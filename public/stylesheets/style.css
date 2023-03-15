@@ -52,6 +52,12 @@ th, td {
 	padding: 4px 4px 4px 4px;
 }
 
+.tableOption:hover{
+	background-color: aquamarine;
+	color: black;
+}
+
+
 .tableHeader{
 	font-size: medium;
 	font-family: "Courier New", monospace;
