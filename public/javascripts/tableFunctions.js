@@ -49,7 +49,6 @@ function fetchStops(busName) {
 
 			dest0Stops = destinations[0].getElementsByTagName("stop");
 			dest1Stops = destinations[1].getElementsByTagName("stop");
-
 			//Makes sure all stops are iterated through incase 1 destinations amount of stops is lower than another
 			if (dest0Stops.length >= dest1Stops.length) {
 				highestStops = dest0Stops.length;
@@ -57,7 +56,6 @@ function fetchStops(busName) {
 			else {
 				highestStops = dest1Stops.length;
 			}
-
 			for (k = 0; k < highestStops; k++) {
 				//If k exceeds the amount of stops for a certain destination, prints an empty square in the table to prevent
 				//an out of bounds error.
@@ -78,17 +76,12 @@ function fetchStops(busName) {
 		}
 		else {
 			table = "<tr><th>" + destinations[0].getAttribute("desc") + "</th></tr>";
-
 			dest0Stops = destinations[0].getElementsByTagName("stop");
-
 			for (k = 0; k < dest0Stops.length; k++) {
 				table += "<tr><td>" + dest0Stops[k].getAttribute("desc") + "</td></tr>";
 			}
 		}
-
 		document.getElementById("lineTable").innerHTML = table;
-		
-
 	},
 	function(status) {
 		console.log("We got an error: " + status);
@@ -106,6 +99,7 @@ $("#showNames").on("click", function() {
 });
 
 function fetchNames() {
+	//Just for debugging purposes. Maybe remove later.
 	//var justry = $(this).text();
 	//console.log(justry);
 
@@ -113,7 +107,7 @@ function fetchNames() {
 		var i, k;
 		var xmlDoc = xml.documentElement;
 		var buses = xmlDoc.getElementsByTagName("route");
-
+		//Creates a temporary table that we will put buttons into later.
 		var tempTable = "<tr><th> Transportation </th></tr>";
 
 		for (k = 0; k < buses.length; k++) {
@@ -121,17 +115,25 @@ function fetchNames() {
 		}
 
 		document.getElementById('lineTable').innerHTML = tempTable;
-
+		//Now we begin creating the button
 		var table = document.getElementById('lineTable');
 		var rows = table.rows;
 
 		//Fetches all of  the names
 		for (i = 0; i < rows.length - 1; i++) {
+			//Creates new button. Iterates through the larger "buses" xml data that 
+			//provides us all of the bus/light rail names.
 			var button = document.createElement('button');
 			button.innerText = buses[i].getAttribute("desc");
 			button.setAttribute('type', 'button');	
-			button.setAttribute('class', 'line-button'); 		
-
+			button.setAttribute('class', 'line-button'); 
+			//This part is important. Since we are creating this table full of buttons after the program has started, 
+			//the previous event listener doesn't work. We must manually add it AFTER the button has been created.
+			button.addEventListener("click", function(){
+				var theBusName = $(this).text();
+				fetchStops(theBusName);
+			});
+			// TODO ---- ASK MAX TO COMMENT HERE. 
 			var cols = rows[i+1].cells;
 			var correctCol = rows[i+1]['cells'][cols.length - 1];
 
