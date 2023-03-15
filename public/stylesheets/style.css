@@ -4,36 +4,38 @@ body {
 	
 }
 
+/*Various elements for the side table that James And max have been doing */
+
+/* This one is just the actual table. Weird name - perhaps change */
 .table-border {
 	border: 1px solid black;
 	border-collapse: collapse;
 	table-layout: fixed;
 	width: 100%;
-	margin-top:20px;
+	margin-top:2px;
 	margin-bottom: 5px;
 }
-
+/*Buttons with the name of the bus line. */
 .line-button{
 	margin: 4px 4px 4px 4px;
 	color: rgb(0, 14, 14);
-
 }
-
+/*I believe this is for line button? If you know tell james. */
 th, td {
 	border: 1px solid black;
 	border-collapse: collapse;
 	word-wrap: break-word;
 }
-
-
+/*table-border tr and th style the "lines" table  */
 .table-border th {
 	background-color: #009879;
     color: #ffffff;
     text-align: left;
 }
+/*source: https://dev.to/dcodeyt/creating-beautiful-html-tables-with-css-428l 
+These next three alternate the colors of the table backgrounds for readability */
 
 .table-border tbody tr {
-
 	border-top: 3px solid #dddddd;
     border-bottom: 3px solid #dddddd;
 }
@@ -45,7 +47,8 @@ th, td {
 .table-border tbody tr:last-of-type {
     border-bottom: 2px solid #009879;
 }
-
+/*TableOption are the buttons that give control
+over what the table does, such as "show names" and "minimize" */
 .tableOption{
 	margin: 5px 5px 5px 5px;
 	background-color: #04f4c0;
@@ -62,7 +65,7 @@ th, td {
 	color: black;
 }
 
-
+/*For displaying the selected route.*/
 .tableHeader{
 	font-size: medium;
 	font-family: "Courier New", monospace;

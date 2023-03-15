@@ -54,35 +54,21 @@
 		</section>
 		
 		<div class="grid-container">
-				<!--This currently contains the visualization table. Only good right now 
-					For showing the blue and red lines. We will need to bulk this out. Also, 
-					we may want to update the "click" events to purely happenin the js files. 
-					But for now it's ok.
-				-->
+				<!--This is the left side bar. It contains the route data visualization table and the buttons/search bar
+					that interact with it. -->
 			<div class="grid-item-1">
 				<input type="text" id="searchbar" placeholder="Search For Buses Here"></input>
 				<br>
 				<h3>Schedule</h3>
 				<br>
-				<!-- Three buttons, self explanatory. One minimizes or shows the table, depending on what's there.
-					 The other two buttons show either the red or blue line. 
-					 
-				-->
+				<!-- Buttons and headers that interact w/table and display route name -->
 				<button class="tableOption" id="minimizeBtn" type="button">Show Table</button>
 				<button class="tableOption" id="showNames" type="button">Show Names</button>
 				<p class="tableHeader">Route Selected:</p>
 				<p class="tableHeader" id="selectedRoute"></p>
-
-				<!--
-				<button type="button" class="line-button">MAX Blue Line</button>
-				<button type="button" class="line-button">MAX Red Line</button>
-				<button type="button" class="line-button">MAX Green Line</button>
-				<button type="button" class="line-button">MAX Orange Line</button>
-				-->
 				<br>
 				<!--Table element that shows all the line data. -->
 				<table id="lineTable" class="table-border"></table>
-			<!--	possibly delete, just here for record keeping: <table id="redLine" class="table-border"></table> -->
 			</div>
 			<div class="grid-item-2">
 				<div id="map"></div>
