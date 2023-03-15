@@ -27,7 +27,7 @@ function fetchStops(busName) {
 		var buses = xmlDoc.getElementsByTagName("route");
 
 		console.log(busName);
-
+		
 		//Goes through all available bus lines/ MAX rails in order to find data for given bus/MAX line
 		for (i = 0; i < buses.length; i++) {
 			if (buses[i].getAttribute("desc") == busName) {
@@ -82,6 +82,7 @@ function fetchStops(busName) {
 			}
 		}
 		document.getElementById("lineTable").innerHTML = table;
+		document.getElementById("selectedRoute").innerText = busName;
 	},
 	function(status) {
 		console.log("We got an error: " + status);
