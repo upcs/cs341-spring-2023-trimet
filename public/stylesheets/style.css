@@ -57,6 +57,11 @@ th, td {
 	color: black;
 }
 
+.tableOption:active{
+	background-color: rgb(2, 112, 75);
+	color: black;
+}
+
 
 .tableHeader{
 	font-size: medium;
