@@ -46,17 +46,23 @@ function mappingStops(){
 
 	var xmlDoc = xml.documentElement;
 	var stops = xmlDoc.getElementsByTagName("Placemark");
+	//console.log("HERE! stops.js line 51");
 
-	var tempPoint;
+	var temp;
 	var tempCoords;
-	stops.childNodes.forEach(myFunction);
-	//this should loop through all the stops
-	function myFunction(item){
-		tempPoint = item.getElementsByTagName("Point");
-		tempCoords = temp.getElementsByTagName("coordinates");
+	var i = 0;
+	//we know how many stops there are
+	for (i = 0; i < 6468; i++) {
+		//console.log("iteration: " + i);
+
+		temp = stops[i].getElementsByTagName("Point")[0];
+		tempCoords = temp.getElementsByTagName("coordinates")[0];
 
 		//call function to place an icon at tempCoords coordinates
-		console.log("coords: " + tempCoords);
+		console.log("coords at iteration: " + tempCoords.textContent);
+
+		//add coords to map
+		
 	}
 
 
