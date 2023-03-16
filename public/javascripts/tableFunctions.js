@@ -1,7 +1,7 @@
 "use strict";
 /**
  * A js file that interacts with the side table that displays information about the routes. 
- * utilizes lots of fetch.js functions to grab data from trimet.
+ * utilizes lots of fetch.js functions to grab data from trimet. Table.js has function that hides or shows table.
 ////////////////////////////////////////////////////////////////////////////////////
  * source: https://www.w3schools.com/xml/ajax_applications.asp
  * 
@@ -13,6 +13,26 @@
  * SIDE NOTE: Method currently puts data into a table format and prints it into the schedule div box. This will most likely be changed
  * in the future in order to better display data based on clicks from the map.
  */
+
+
+const searchInput = document.querySelector("[route-search]");
+
+searchInput.addEventListener("input", (e) =>{
+	const value = e.target.value;
+	
+	var lowerName = value.toLowerCase();
+	console.log(lowerName);
+
+	if(lowerName == ""){
+		fetchNames();
+	}
+	else{
+	fetchSearchNames(lowerName);
+	}
+});
+
+
+
 
 //Must, abolutely MUST use event handlers instead of onClick. Otherwise, "This" will simply not work.
 $(".line-button").on("click", function() {
@@ -104,6 +124,10 @@ function fetchNames() {
 	//var justry = $(this).text();
 	//console.log(justry);
 
+	$("#minimizeBtn").show();
+	$("#searchbar").show();
+
+
 	fetchAppXml("https://developer.trimet.org/ws/V1/routeConfig", {stops: true, dir: true}, function(xml) {
 		var i, k;
 		var xmlDoc = xml.documentElement;
@@ -139,9 +163,73 @@ function fetchNames() {
 			var correctCol = rows[i+1]['cells'][cols.length - 1];
 
 			correctCol.appendChild(button);
+			document.getElementById("selectedRoute").innerText = " ";
 		}
 	},
 	function(status) {
 		console.log("We got an error: " + status);
 	});
 }
+
+function fetchSearchNames(searchText) {
+
+	fetchAppXml("https://developer.trimet.org/ws/V1/routeConfig", {stops: true, dir: true}, function(xml) {
+		var i, k;
+		var xmlDoc = xml.documentElement;
+		var buses = xmlDoc.getElementsByTagName("route");
+		//Creates a temporary table that we will put buttons into later.
+		var tempTable = "<tr><th> Transportation </th></tr>";
+
+		//Now we begin creating the button
+		var table = document.getElementById('lineTable');
+		var rows = table.rows;
+		console.log(rows.length);
+		
+		for (k = 0; k < rows.length -1; k++) {
+			var routeNameNormal = buses[k].getAttribute("desc");
+			var routeNameToLower = routeNameNormal.toLowerCase();
+			//Only creates spot for button if we're going to need that button
+			if(routeNameToLower.includes(searchText)){
+			tempTable += "<tr><td> </td></tr>";
+			}
+			
+		}
+		document.getElementById('lineTable').innerHTML = tempTable;
+		
+		//Fetches all of  the names
+		for (i = 0; i < rows.length - 1; i++) {
+			//Only difference between this function and Show names is that there is an if statement that filters them.
+			//The if statement checks the route list to see if any contain the string typed into the search bar.
+			var routeNameNormal = buses[i].getAttribute("desc");
+			var routeNameToLower = routeNameNormal.toLowerCase();
+			if(routeNameToLower.includes(searchText)){
+				//Creates new button. Iterates through the larger "buses" xml data that 
+				//provides us all of the bus/light rail names.
+				var button = document.createElement('button');
+				button.innerText = buses[i].getAttribute("desc");
+				button.setAttribute('type', 'button');	
+				button.setAttribute('class', 'line-button'); 
+				//This part is important. Since we are creating this table full of buttons after the program has started, 
+				//the previous event listener doesn't work. We must manually add it AFTER the button has been created.
+				button.addEventListener("click", function(){
+					var theBusName = $(this).text();
+					fetchStops(theBusName);
+				});
+				// TODO ---- ASK MAX TO COMMENT HERE. 
+				var cols = rows[i+1].cells;
+				var correctCol = rows[i+1]['cells'][cols.length - 1];
+
+				correctCol.appendChild(button);
+				document.getElementById("selectedRoute").innerText = " ";
+			}
+		}
+	},
+	function(status) {
+		console.log("We got an error: " + status);
+	});
+}
+
+
+
+
+
