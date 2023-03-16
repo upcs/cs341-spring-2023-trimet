@@ -14,9 +14,9 @@
  * in the future in order to better display data based on clicks from the map.
  */
 
-
+//This event listener is attached to the search bar. It calls the fetchSearchNames function to see if 
+//there are any matching strings. If not, and there is an empty sting in there, it repopulates the table.
 const searchInput = document.querySelector("[route-search]");
-
 searchInput.addEventListener("input", (e) =>{
 	const value = e.target.value;
 	
@@ -171,6 +171,9 @@ function fetchNames() {
 	});
 }
 
+//This function works with the search bar. When someone types in anything to the seach bar, this function is called
+//to find routes that match their string. Most of the code is simply the same as fetchStops, except it creates a smaller table
+//and filters out irrelevant routes.
 function fetchSearchNames(searchText) {
 
 	fetchAppXml("https://developer.trimet.org/ws/V1/routeConfig", {stops: true, dir: true}, function(xml) {
