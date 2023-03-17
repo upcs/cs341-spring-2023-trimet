@@ -16,7 +16,7 @@ body {
 	margin-bottom: 5px;
 }
 /*hides search bar on load. */
-.searchClass {
+.hide {
 	display: none;
 }
 /*Buttons with the name of the bus line. */
@@ -90,6 +90,7 @@ over what the table does, such as "show names" and "minimize" */
 
 /*For displaying the selected route.*/
 .tableHeader{
+	display: none;
 	font-size: medium;
 	font-family: "Courier New", monospace;
 

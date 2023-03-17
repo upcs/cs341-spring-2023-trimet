@@ -1,6 +1,6 @@
 "use strict";
 
-//Interacts with minimize/show button. Changes text on button and either hids or shows.
+//Interacts with minimize/show button. Changes text on button and either hids or shows the table and supporting elements.
 
 $("#minimizeBtn").on("click", function() {
 	hideLineTable();
@@ -11,9 +11,13 @@ function hideLineTable() {
 	if ($('#minimizeBtn').text() == "Minimize Table"){	
 		$("#minimizeBtn").text("Show Table");
 		$("#lineTable").hide();
+		$('#routeSelected').hide();
+		$('#selectedRoute').hide();
 	}
 	else{
 		$("#minimizeBtn").text("Minimize Table");
 		$("#lineTable").show();
+		$('#routeSelected').show();
+		$('#selectedRoute').show();
 	}
 }

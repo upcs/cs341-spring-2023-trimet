@@ -39,7 +39,11 @@ $(".line-button").on("click", function() {
 	fetchStops(theBusName);
 });
 
+//Grabs the stops for a given route selected. This is the function
+//that is called when a route button is clicked.
 function fetchStops(busName) {
+	$('#routeSelected').show();
+	$('#selectedRoute').show();
 	fetchAppXml("https://developer.trimet.org/ws/V1/routeConfig", {stops: true, dir: true}, function(xml) {
 		var i, k, highestStops, busNum;
 		var xmlDoc = xml.documentElement;
