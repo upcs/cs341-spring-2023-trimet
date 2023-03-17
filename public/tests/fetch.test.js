@@ -1,10 +1,12 @@
 const dom = require("./dom.js");
 const co = require("./common.js");
 
-test("Query URLs are created correctly", async () => {
-	const window = await dom.loadScripts(co.testUrls);
+const windowPromise = dom.loadScripts(co.testUrls);
 
-	// Polyfill in our own app ID for testing.
+test("Query URLs are created correctly", async () => {
+	const window = await windowPromise;
+
+	// Monkey-patch in our own app ID for testing.
 	window.APP_ID = "FUNKEY";
 
 	let url = window.makeAppUrl("https://www.example.com/");
@@ -15,7 +17,7 @@ test("Query URLs are created correctly", async () => {
 });
 
 test("fetchData() can access data and handle errors", async () => {
-	const window = await dom.loadScripts(co.testUrls);
+	const window = await windowPromise;
 	expect.assertions(4);
 
 	let text = await window.fetchText("tests/data/testFile.txt");
@@ -30,7 +32,7 @@ test("fetchData() can access data and handle errors", async () => {
 });
 
 test("fetchJson() loads JSON correctly", async () => {
-	const window = await dom.loadScripts(co.testUrls);
+	const window = await windowPromise;
 	expect.assertions(4);
 
 	let json = await window.fetchJson("tests/data/testJson.json");
@@ -43,7 +45,7 @@ test("fetchJson() loads JSON correctly", async () => {
 });
 
 test("fetchXml() loads XML correctly", async () => {
-	const window = await dom.loadScripts(co.testUrls);
+	const window = await windowPromise;
 	expect.assertions(4);
 
 	let xml = await window.fetchXml("tests/data/testXml.xml");
