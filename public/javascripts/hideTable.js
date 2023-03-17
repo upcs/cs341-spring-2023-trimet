@@ -1,6 +1,6 @@
 "use strict";
 
-//Interacts with minimize/show button. Changes text on button and either hids or shows.
+//Called on the minimize/show table button. Changes text on button and either hides or shows the table elemtents.
 
 $("#minimizeBtn").on("click", function() {
 	hideLineTable();
