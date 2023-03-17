@@ -6,20 +6,22 @@
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 
-		<!-- Load both our CSS file and the one for OpenLayers. -->
+		<!-- Load both our CSS file and the one for Leaflet. -->
 		<link rel="stylesheet" href="/stylesheets/style.css" />
-		<link rel="stylesheet" href="/ol/ol.css" />
+		<link
+			rel="stylesheet"
+			href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css"
+			integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI="
+			crossorigin="" />
 
-		<!-- Before any other scripts, load our dependencies. -->
+
+		<!-- Before any other scripts, load jQuery and Leaflet. -->
 		<script defer src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
-
-		<!--
-			OpenLayers uses modules, but we want to avoid using those in the
-			rest of our code. However, since module and non-module code can't
-			be mixed, we import all the modules we need from OpenLayers into
-			the global namespace.
-		-->
-		<script defer type="module" src="/javascripts/importModules.js"></script>
+		<script
+			src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"
+			integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM="
+			crossorigin="">
+		</script>
 
 		<!-- Then, we can commence loading our scripts in order of usage. -->
 		<script defer src="/javascripts/fetch.js"></script>
@@ -52,12 +54,11 @@
 			<div class="menu-bg" id="menu-bg"></div>
 		</div>
 		</section>
-		
+
 		<div class="grid-container">
 				<!--This is the left side bar. It contains the route data visualization table and the buttons/search bar
 					that interact with it. -->
 			<div class="grid-item-1">
-				
 				<h3>Schedule</h3>
 				<br>
 				<!-- Buttons and headers that interact w/table and display route name -->
