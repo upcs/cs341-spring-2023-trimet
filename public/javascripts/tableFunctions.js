@@ -21,7 +21,6 @@ searchInput.addEventListener("input", (e) =>{
 	const value = e.target.value;
 	
 	var lowerName = value.toLowerCase();
-	console.log(lowerName);
 
 	if(lowerName == ""){
 		fetchNames();
@@ -45,8 +44,6 @@ function fetchStops(busName) {
 		var i, k, highestStops, busNum;
 		var xmlDoc = xml.documentElement;
 		var buses = xmlDoc.getElementsByTagName("route");
-
-		console.log(busName);
 		
 		//Goes through all available bus lines/ MAX rails in order to find data for given bus/MAX line
 		for (i = 0; i < buses.length; i++) {
@@ -114,19 +111,13 @@ function fetchStops(busName) {
  * This function fetches all of the names of the routes that we need and displays them 
  * inside of a table in the left menu.
  */
-
 $("#showNames").on("click", function() {
 	fetchNames();
 });
 
 function fetchNames() {
-	//Just for debugging purposes. Maybe remove later.
-	//var justry = $(this).text();
-	//console.log(justry);
-
 	$("#minimizeBtn").show();
 	$("#searchbar").show();
-
 
 	fetchAppXml("https://developer.trimet.org/ws/V1/routeConfig", {stops: true, dir: true}, function(xml) {
 		var i, k;
@@ -158,10 +149,13 @@ function fetchNames() {
 				var theBusName = $(this).text();
 				fetchStops(theBusName);
 			});
-			// TODO ---- ASK MAX TO COMMENT HERE. 
+			//Takes the amount of columns per each row. Then takes the last column and puts in in correctCol. Although we
+			//only have one column right now, it can be used in the future for rows that have multiple columns.
 			var cols = rows[i+1].cells;
 			var correctCol = rows[i+1]['cells'][cols.length - 1];
 
+			//Appends buttons in the column in each row. In this case the specific table is empty so it simply has the buttons
+			//in each slot of the table.
 			correctCol.appendChild(button);
 			document.getElementById("selectedRoute").innerText = " ";
 		}
@@ -175,9 +169,8 @@ function fetchNames() {
 //to find routes that match their string. Most of the code is simply the same as fetchStops, except it creates a smaller table
 //and filters out irrelevant routes.
 function fetchSearchNames(searchText) {
-
 	fetchAppXml("https://developer.trimet.org/ws/V1/routeConfig", {stops: true, dir: true}, function(xml) {
-		var i, k;
+		var i, k, j;
 		var xmlDoc = xml.documentElement;
 		var buses = xmlDoc.getElementsByTagName("route");
 		//Creates a temporary table that we will put buttons into later.
@@ -186,26 +179,29 @@ function fetchSearchNames(searchText) {
 		//Now we begin creating the button
 		var table = document.getElementById('lineTable');
 		var rows = table.rows;
-		console.log(rows.length);
 		
-		for (k = 0; k < rows.length -1; k++) {
+		for (k = 0; k < buses.length; k++) {
 			var routeNameNormal = buses[k].getAttribute("desc");
 			var routeNameToLower = routeNameNormal.toLowerCase();
 			//Only creates spot for button if we're going to need that button
 			if(routeNameToLower.includes(searchText)){
-			tempTable += "<tr><td> </td></tr>";
+				tempTable += "<tr><td> </td></tr>";
 			}
-			
 		}
+
 		document.getElementById('lineTable').innerHTML = tempTable;
+
+		rows = table.rows;
+		var buttonArray = [];
 		
 		//Fetches all of  the names
-		for (i = 0; i < rows.length - 1; i++) {
+		for (i = 0; i < buses.length; i++) {
 			//Only difference between this function and Show names is that there is an if statement that filters them.
 			//The if statement checks the route list to see if any contain the string typed into the search bar.
 			var routeNameNormal = buses[i].getAttribute("desc");
 			var routeNameToLower = routeNameNormal.toLowerCase();
 			if(routeNameToLower.includes(searchText)){
+
 				//Creates new button. Iterates through the larger "buses" xml data that 
 				//provides us all of the bus/light rail names.
 				var button = document.createElement('button');
@@ -218,13 +214,20 @@ function fetchSearchNames(searchText) {
 					var theBusName = $(this).text();
 					fetchStops(theBusName);
 				});
-				// TODO ---- ASK MAX TO COMMENT HERE. 
-				var cols = rows[i+1].cells;
-				var correctCol = rows[i+1]['cells'][cols.length - 1];
 
-				correctCol.appendChild(button);
-				document.getElementById("selectedRoute").innerText = " ";
+				//Pushes button to array to later be put into table
+				buttonArray.push(button);
 			}
+		}
+
+		//Loops through the rows of the table and puts each of the buttons into the table. Rows and the length
+		//of buttonArray should be the exact same.
+		for (j = 0; j < rows.length - 1; j++) {
+			var cols = rows[j+1].cells;
+			var correctCol = rows[j+1]['cells'][cols.length - 1];
+
+			correctCol.appendChild(buttonArray[j]);
+			document.getElementById("selectedRoute").innerText = " ";
 		}
 	},
 	function(status) {
