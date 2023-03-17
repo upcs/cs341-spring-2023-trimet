@@ -9,11 +9,17 @@ $("#minimizeBtn").on("click", function() {
 function hideLineTable() {
 	//var last = $.data(txtbox_1, "last");
 	if ($('#minimizeBtn').text() == "Minimize Table"){	
-		$("#minimizeBtn").text("Show Table");
+		$("#minimizeBtn").text("Show Table");	
+		$("#routeSelected").hide();
+		$("#searchbar").hide();
+		$("#selectedRoute").hide();
 		$("#lineTable").hide();
 	}
 	else{
 		$("#minimizeBtn").text("Minimize Table");
+		$("#routeSelected").show();
+		$("#searchbar").show();
+		$("#selectedRoute").show();
 		$("#lineTable").show();
 	}
 }

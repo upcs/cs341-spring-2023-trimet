@@ -19,9 +19,7 @@
 const searchInput = document.querySelector("[route-search]");
 searchInput.addEventListener("input", (e) =>{
 	const value = e.target.value;
-	
 	var lowerName = value.toLowerCase();
-
 	if(lowerName == ""){
 		fetchNames();
 	}
@@ -30,16 +28,18 @@ searchInput.addEventListener("input", (e) =>{
 	}
 });
 
-
-
-
 //Must, abolutely MUST use event handlers instead of onClick. Otherwise, "This" will simply not work.
 $(".line-button").on("click", function() {
 	var theBusName = $(this).text();
 	fetchStops(theBusName);
 });
 
+//Function that shows stops when a route is selected. This is what is attached to route buttons.
+// i.e. "Max Blue Line"
 function fetchStops(busName) {
+	$("#routeSelected").show();
+	$("#searchbar").show();
+	$("#selectedRoute").show();
 	fetchAppXml("https://developer.trimet.org/ws/V1/routeConfig", {stops: true, dir: true}, function(xml) {
 		var i, k, highestStops, busNum;
 		var xmlDoc = xml.documentElement;
@@ -110,12 +110,15 @@ function fetchStops(busName) {
 /**
  * This function fetches all of the names of the routes that we need and displays them 
  * inside of a table in the left menu.
+ * This function is called each time you click "show all routes."
  */
 $("#showNames").on("click", function() {
 	fetchNames();
 });
 
 function fetchNames() {
+	$("#routeSelected").show();
+	$("#selectedRoute").show();
 	$("#minimizeBtn").show();
 	$("#searchbar").show();
 
