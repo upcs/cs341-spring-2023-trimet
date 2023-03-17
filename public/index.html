@@ -25,7 +25,7 @@
 		<script defer src="/javascripts/fetch.js"></script>
 		<script defer src="/javascripts/map.js"></script>
 		<script defer src="/javascripts/interaction.js"></script>
-		<script defer src="/javascripts/table.js"></script>
+		<script defer src="/javascripts/hideTable.js"></script>
 		<script defer src="/javascripts/tableFunctions.js"></script>
 
 	</head>
@@ -57,13 +57,15 @@
 				<!--This is the left side bar. It contains the route data visualization table and the buttons/search bar
 					that interact with it. -->
 			<div class="grid-item-1">
-				<input type="text" id="searchbar" placeholder="Search For Buses Here"></input>
-				<br>
+				
 				<h3>Schedule</h3>
 				<br>
 				<!-- Buttons and headers that interact w/table and display route name -->
-				<button class="tableOption" id="minimizeBtn" type="button">Show Table</button>
-				<button class="tableOption" id="showNames" type="button">Show Names</button>
+				<button class="tableOption1" id="minimizeBtn" type="button">Minimize Table</button>
+				<button class="tableOption2" id="showNames" type="button">Show All Routes</button>
+				<br>
+				<input type="search" id="searchbar" class="searchClass" placeholder="Search For Buses Here" route-search>
+				<br>
 				<p class="tableHeader">Route Selected:</p>
 				<p class="tableHeader" id="selectedRoute"></p>
 				<br>

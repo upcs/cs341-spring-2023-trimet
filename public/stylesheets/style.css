@@ -15,6 +15,10 @@ body {
 	margin-top:2px;
 	margin-bottom: 5px;
 }
+/*hides search bar on load. */
+.searchClass {
+	display: none;
+}
 /*Buttons with the name of the bus line. */
 .line-button{
 	margin: 4px 4px 4px 4px;
@@ -49,21 +53,40 @@ These next three alternate the colors of the table backgrounds for readability *
 }
 /*TableOption are the buttons that give control
 over what the table does, such as "show names" and "minimize" */
-.tableOption{
+.tableOption1{
 	margin: 5px 5px 5px 5px;
 	background-color: #04f4c0;
 	padding: 4px 4px 4px 4px;
+	display: none;
 }
 
-.tableOption:hover{
+.tableOption1:hover{
 	background-color: aquamarine;
 	color: black;
 }
 
-.tableOption:active{
+.tableOption1:active{
 	background-color: rgb(2, 112, 75);
 	color: black;
 }
+
+.tableOption2{
+	margin: 5px 5px 5px 5px;
+	background-color: #04f4c0;
+	padding: 4px 4px 4px 4px;
+	
+}
+
+.tableOption2:hover{
+	background-color: aquamarine;
+	color: black;
+}
+
+.tableOption2:active{
+	background-color: rgb(2, 112, 75);
+	color: black;
+}
+
 
 /*For displaying the selected route.*/
 .tableHeader{
