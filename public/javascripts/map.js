@@ -26,6 +26,7 @@ var marker = L.circleMarker([45.523064, -122.676483], {
 	fillOpacity: 1,
 }).addTo(map);
 
+
 marker.on("click", function(e) {
 	console.log("You clicked a point", e.target);
 });
