@@ -23,6 +23,9 @@
 	--primary-fg: black;
 	--primary-border: lightgray;
 
+	--accent-bg: gainsboro;
+	--accent-fg: black;
+
 	--header-bg: #333;
 	--header-fg: #eee;
 	--header-border: #1b9891;
@@ -38,4 +41,5 @@
 
 	--progress-dark: #1b9891;
 	--progress-light: #26d9d0;
+	--progress-fg: white;
 }
