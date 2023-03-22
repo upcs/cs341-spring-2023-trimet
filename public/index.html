@@ -28,6 +28,7 @@
 
 		<!-- Finally, load the files that handle the DOM and map. -->
 		<script defer src="/javascripts/interaction.js"></script>
+		<script defer src="/javascripts/table.js"></script>
 		<script defer src="/javascripts/map.js"></script>
 	</head>
 	<body>
@@ -63,15 +64,30 @@
 				sidebar selector. -->
 			<div id="sidebar" data-tablist="sidebar">
 				<div id="routes-sidebar" data-tab="routes">
-					<div id="routes-header">
-						<input id="routes-search" type="search" placeholder="Search for route" />
+					<div id="routes-loading-box" data-shown>
+						<div class="loading">Loading routes...</div>
 					</div>
-					<div id="routes-list">
-						<button>MAX Blue Line</button>
-						<button>MAX Green Line</button>
-						<button>MAX Orange Line</button>
-						<button>MAX Red Line</button>
-						<button>MAX Yellow Line</button>
+					<div id="routes-list-box">
+						<div id="routes-list-header">
+							<input id="routes-search" type="search" placeholder="Search for route" />
+						</div>
+						<div id="routes-list">
+							<button>Route</button>
+						</div>
+					</div>
+					<div id="dir-box">
+						<div id="dir-header">
+							<button id="dir-back" class="special light-button">&#x2190;</button>
+							<div id="dir-chosen"></div>
+						</div>
+						<div id="dir-selector" data-tablist="routes-dir">
+							<button id="dir-0-selector" class="special" data-tab="dir-0"></button>
+							<button id="dir-1-selector" class="special" data-tab="dir-1"></button>
+						</div>
+						<div id="dir-lists" data-tablist="routes-dir">
+							<div id="dir-0-list" data-tab="dir-0"></div>
+							<div id="dir-1-list" data-tab="dir-1"></div>
+						</div>
 					</div>
 				</div>
 			</div>
