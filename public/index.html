@@ -19,9 +19,14 @@
 			integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM="
 			crossorigin=""></script>
 
-		<!-- Then, we can commence loading our scripts in order of usage. -->
+		<!-- Then, we can commence loading our scripts in order of usage.
+			First, we load the scripts that contain utility functions but don't
+			do any fetching or DOM modification. -->
+		<script defer src="/javascripts/util.js"></script>
 		<script defer src="/javascripts/fetch.js"></script>
 		<script defer src="/javascripts/uiHelpers.js"></script>
+
+		<!-- Finally, load the files that handle the DOM and map. -->
 		<script defer src="/javascripts/interaction.js"></script>
 		<script defer src="/javascripts/map.js"></script>
 	</head>
