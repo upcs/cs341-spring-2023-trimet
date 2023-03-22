@@ -1,0 +1,17 @@
+.style-table th {
+	background-color: #009879;
+	color: #ffffff;
+	text-align: left;
+}
+
+.style-table tr {
+    border-bottom: 1px solid #dddddd;
+}
+
+.style-table tr:nth-of-type(even) {
+    background-color: pink;
+}
+
+.style-table tr:last-of-type {
+    border-bottom: 2px solid #009879;
+}
