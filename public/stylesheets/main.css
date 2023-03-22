@@ -1,0 +1,12 @@
+/* Contains variables defining the all the colors used in styling things. */
+@import "theme.css";
+/* Styles generic interactive widgets, like <input>. */
+@import "controls.css";
+/* Defines major layout and style rules. */
+@import "primary.css";
+/* Styles the entire header, including the selector. */
+@import "header.css";
+/* Styles the sidebar and its various children tabs. */
+@import "sidebar.css";
+/* Styles dialogs/messages and their associated elements. */
+@import "dialogs.css";

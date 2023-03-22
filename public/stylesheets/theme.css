@@ -1,0 +1,41 @@
+:root {
+	--link-fg: #1b9891;
+	--link-active-fg: #0f5753;
+
+	--button-bg: white;
+	--button-fg: black;
+	--button-border: lightgray;
+
+	--button-hover-bg: #bef4f1;
+	--button-hover-border: #1fada6;
+
+	--button-active-bg: #7ce9e3;
+	--button-active-border: #157873;
+
+	--input-bg: white;
+	--input-fg: black;
+	--input-border: lightgray;
+
+	--input-hover-border: #1fada6;
+	--input-active-border: #1b9891;
+
+	--primary-bg: whitesmoke;
+	--primary-fg: black;
+	--primary-border: lightgray;
+
+	--header-bg: #333;
+	--header-fg: #eee;
+	--header-border: #1b9891;
+
+	--header-accent-fg: #20b2aa;
+
+	--header-hover-bg: #1b9891;
+	--header-active-bg: #136c68;
+
+	--selector-button-fg: white;
+	--selector-hover-border: #1fada6;
+	--selector-active-border: #157873;
+
+	--progress-dark: #1b9891;
+	--progress-light: #26d9d0;
+}

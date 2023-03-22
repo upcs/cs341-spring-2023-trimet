@@ -7,118 +7,147 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 
 		<!-- Load both our CSS file and the one for Leaflet. -->
-		<link rel="stylesheet" href="/stylesheets/style.css" />
-		<link
-			rel="stylesheet"
-			href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css"
+		<link rel="stylesheet" href="/stylesheets/main.css" />
+		<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css"
 			integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI="
 			crossorigin="" />
 
 
 		<!-- Before any other scripts, load jQuery and Leaflet. -->
-		<script defer src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
-		<script
-			src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+		<script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"
 			integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM="
-			crossorigin="">
-		</script>
+			crossorigin=""></script>
 
 		<!-- Then, we can commence loading our scripts in order of usage. -->
 		<script defer src="/javascripts/fetch.js"></script>
-		<script defer src="/javascripts/map.js"></script>
+		<script defer src="/javascripts/uiHelpers.js"></script>
 		<script defer src="/javascripts/interaction.js"></script>
-		<script defer src="/javascripts/hideTable.js"></script>
-		<script defer src="/javascripts/tableFunctions.js"></script>
-
+		<script defer src="/javascripts/map.js"></script>
 	</head>
 	<body>
-		<section class="top-bar">
-			<div>
+		<!-- The whole main element of the page is a grid. Special content,
+			like dialogs, and hidden content are stored outside of the main
+			grid.  -->
+		<main>
+			<!-- Space for holding the map. -->
+			<div id="map"></div>
+
+			<!-- Top bar containing the title of the application and buttons
+				for pop-ups. -->
+			<div id="header-bg"></div>
+			<header id="header">
 				<h1>TriMet TravelMap</h1>
-<!--code courtesy of https://alvarotrigo.com/blog/hamburger-menu-css/-->
-
-		<div id="menu">
-				<div id="menu-bar" onclick="menuOnClick()">
-				<div id="bar1" class="bar"></div>
-				<div id="bar2" class="bar"></div>
-				<div id="bar3" class="bar"></div>
-				</div>
-				<nav class="nav" id="nav">
-				<ul>
-					<li onclick="howToPopupOnClick()">How-To</li>
-					<li onclick="alertsPopupOnClick()">Service Alerts</li>
-					<li onclick="aboutPopupOnClick()">About</li>
-				</ul>
+				<nav id="info-links">
+					<button class="special" id="info-how-to">How-To</button>
+					<button class="special" id="info-service-alerts">Service Alerts</button>
+					<button class="special" id="info-about">About</button>
 				</nav>
-			</div>
-			<div class="menu-bg" id="menu-bg"></div>
-		</div>
-		</section>
+			</header>
 
-		<div class="grid-container">
-				<!--This is the left side bar. It contains the route data visualization table and the buttons/search bar
-					that interact with it. -->
-			<div class="grid-item-1">
-				<h3>Schedule</h3>
-				<br>
-				<!-- Buttons and headers that interact w/table and display route name -->
-				<button class="tableOption1" id="minimizeBtn" type="button">Minimize Table</button>
-				<button class="tableOption2" id="showNames" type="button">Show All Routes</button>
-				<br>
-				<input type="search" id="searchbar" class="searchClass" placeholder="Search For Buses Here" route-search>
-				<br>
-				<p class="tableHeader">Route Selected:</p>
-				<p class="tableHeader" id="selectedRoute"></p>
-				<br>
-				<!--Table element that shows all the line data. -->
-				<table id="lineTable" class="table-border"></table>
-			</div>
-			<div class="grid-item-2">
-				<div id="map"></div>
-			</div>
-				<div id="alerts-window">
-					<div id="alerts-box">
-						<button id="close" onclick="exitAlertsOnClick()">&times;</button>
-						<h2>Alerts</h2>
+			<!-- Sidebar selector containing buttons for choosing what to
+				display in the sidebar, controlled by a TabList. -->
+			<div id="selector-bg"></div>
+			<nav id="selector" data-tablist="sidebar">
+				<button class="special">Tracker</button>
+				<button class="special">Stops</button>
+				<button class="special" data-tab="routes">Routes</button>
+			</nav>
+
+			<!-- The sidebar; this is controlled by the same TabList as the
+				sidebar selector. -->
+			<div id="sidebar" data-tablist="sidebar">
+				<div id="routes-sidebar" data-tab="routes">
+					<div id="routes-header">
+						<input id="routes-search" type="search" placeholder="Search for route" />
 					</div>
-				</div>
-				<div id="how-to-window">
-					<div id="how-to-box">
-						<button id="close" onclick="exitHowToOnClick()">&times;</button>
-						<h2>How-To</h2>
-						<div class="info">
-							<ul>
-								<li>
-									Navigate the map by clicking with your mouse and 
-									dragging across the screen. Use the scroll wheel or zoom buttons
-									to zoom in or out of the map for more or less detail.
-								</li>
-								<li>
-									Click the route you are interested in to see the stops along the way.
-								</li>
-								<li>
-									Click "Service Alerts" to get information about any changes to operations.
-								</li>
-							</ul>
-						</div>
-					</div>
-				</div>
-				<div id="about-window">
-					<div id="about-box">
-						<button id="close" onclick="exitAboutOnClick()">&times;</button>
-						<h2>About</h2>
-						<div class="info">
-							<p>This website was developed by a group of University of Portland students for CS 341: Software Engineering
-							and was submitted as their semester assignment. This application is not endorsed by TriMet. To learn more about
-							Portland's official public transit system, visit:
-							<a href="https://trimet.org/home/" target="_blank" rel="noopener noreferrer">https://trimet.org/home/</a>
-							To learn more about developing applications using TriMet's data, visit:
-							<a href = "https://developer.trimet.org/" target="_blank" rel="noopener noreferrer">https://developer.trimet.org/</a>
-							</p>
-							</div>
-						</div>
+					<div id="routes-list">
+						<button>MAX Blue Line</button>
+						<button>MAX Green Line</button>
+						<button>MAX Orange Line</button>
+						<button>MAX Red Line</button>
+						<button>MAX Yellow Line</button>
 					</div>
 				</div>
 			</div>
+		</main>
+
+		<!-- The container for holding modal dialog boxes. It will only be
+			shown when it has any child elements in it. -->
+		<div id="dialog-bg"></div>
+
+		<!-- The container for holding non-modal messages. It is invisible to
+			the user. -->
+		<div id="message-bg"></div>
+
+		<!-- We have a few HTML templates in here that can be displayed in
+			dialog boxes. We clone them with jQuery when they're necessary, but
+			these reference copies always stay entirely hidden from the user,
+			hence the use of the HTML "hidden" attribute. -->
+
+		<!-- The template defining an empty dialog box. Each dialog comes
+			built-in with a title bar, optional X button, optional button bar,
+			and a space for content. -->
+		<template id="tem-dialog">
+			<div class="dialog-box">
+				<div class="dialog-header">
+					<header class="dialog-title"></header>
+					<button class="special dialog-x">&#xD7;</button>
+				</div>
+				<section class="dialog-container">
+					<div class="dialog-content"></div>
+					<div class="dialog-buttons"></div>
+				</section>
+			</div>
+		</template>
+
+		<!-- The content of the About information box. -->
+		<template id="tem-about">
+			<p>This website was developed as a
+				University of Portland student project for their CS 341
+				Software Engineering class. This application is not
+				associated with or endorsed by TriMet in any way.
+			</p>
+			<ul>
+				<li><a href="https://trimet.org/home/" target="_blank">
+						Official TriMet website</a>
+				</li>
+				<li><a href="https://developer.trimet.org/" target="_blank">
+						Trimet developer data APIs</a> used in this application
+				</li>
+			</ul>
+		</template>
+
+		<!-- The content of the How-To information box. -->
+		<template id="tem-how-to">
+			<ul>
+				<li>Navigate the map by clicking with your mouse and
+					dragging across the screen. Use the scroll wheel or
+					zoom buttons to zoom in or out of the map for more or
+					less detail.
+				</li>
+				<li>Click the route you are interested in to see the stops
+					along the way.
+				</li>
+				<li>Click "Service Alerts" to get information about any
+					changes to operations.
+				</li>
+			</ul>
+		</template>
+
+		<!-- The template defining an empty non-modal message bar. Message bars
+			come built in with space for small content and buttons. -->
+		<template id="tem-message">
+			<div class="message-box">
+				<div class="message-content"></div>
+				<div class="message-buttons"></div>
+			</div>
+		</template>
+
+		<!-- The initial "loading" message bar shown while static data is being
+			fetched. -->
+		<template id="tem-loading-message">
+			Loading data... <span class="loading" style="width: 400px"></span>
+		</template>
 	</body>
 </html>
