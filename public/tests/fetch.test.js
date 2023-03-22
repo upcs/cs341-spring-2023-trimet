@@ -24,10 +24,10 @@ test("fetchData() can access data and handle errors", async () => {
 	expect(typeof(text)).toBe("string");
 	expect(text[0]).toBe("X");
 
-	await window.fetchText("tests/data/nonExistent.txt")
+	await window.fetchText("tests/data/nonExistent.txt", false)
 		.catch(err => expect(err).toBeDefined());
 
-	await window.fetchText("https://www.example.com")
+	await window.fetchText("https://www.example.com", false)
 		.catch(err => expect(err).toBeDefined());
 });
 
@@ -40,7 +40,7 @@ test("fetchJson() loads JSON correctly", async () => {
 	expect(json.string).toBe("hello world");
 	expect(json.object.key).toBe("value")
 
-	await window.fetchJson("tests/data/testFile.txt")
+	await window.fetchJson("tests/data/testFile.txt", false)
 		.catch(err => expect(err).toBeDefined());
 });
 
@@ -53,6 +53,6 @@ test("fetchXml() loads XML correctly", async () => {
 	expect(xml.documentElement.children.length).toBe(2);
 	expect(xml.documentElement.children[0].getAttribute("attr")).toBe("value");
 
-	await window.fetchJson("tests/data/testFile.txt")
+	await window.fetchXml("tests/data/testFile.txt", false)
 		.catch(err => expect(err).toBeDefined());
 });
