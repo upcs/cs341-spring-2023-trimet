@@ -48,26 +48,23 @@ function mappingStops(){
 	var stops = xmlDoc.getElementsByTagName("Placemark");
 	//console.log("HERE! stops.js line 51");
 
-	var temp;
-	var tempCoords;
 	var coords;
-	var typeTemp;
 	var type;
 	var i = 0;
 	//we know how many stops there are
 	for (i = 0; i < 6468; i++) {
 
-		temp = stops[i].getElementsByTagName("Point")[0];
-		tempCoords = temp.getElementsByTagName("coordinates")[0];
+		coords = stops[i].getElementsByTagName("Point")[0];
+		coords = coords.getElementsByTagName("coordinates")[0];
 
 		//access the extended data to get the type of stop
-		typeTemp = stops[i].getElementsByTagName("ExtendedData")[0];
-		type = typeTemp.getElementsByTagName("Data")[4];
+		type = stops[i].getElementsByTagName("ExtendedData")[0];
+		type = type.getElementsByTagName("Data")[4];
 		type = type.getElementsByTagName("value")[0];
 
 
 		//remove ending coords, break up long and lat
-		coords = tempCoords.textContent.slice(0, -4);
+		coords = coords.textContent.slice(0, -4);
 		const myArray = coords.split(",");
 	
 

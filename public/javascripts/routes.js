@@ -7,20 +7,36 @@ function mappingRoutes(){
 		var xmlDoc = xml.documentElement;
 		var routes = xmlDoc.getElementsByTagName("Placemark");
 	
-		var temp;
-		var tempCoords;
 		var coords;
-		var typeTemp;
-		var type;
 		var i = 0;
 		//we know how many stops there are
 		for (i = 0; i < 193; i++) {
 	
-			temp = routes[i].getElementsByTagName("MultiGeometry")[0];
+			coords = routes[i].getElementsByTagName("MultiGeometry")[0];
 			//tempCoords = temp.getElementsByTagName("coordinates")[0];
-			console.log("coords: " + temp.textContent);
-		
+			coords = coords.textContent;
+			//console.log("coords: " + coords);
+
+			const longLatList = coords.split(" ");
+			//console.log(longLatList[0]);
+			const filteredLL = longLatList.filter(Boolean);
+			//console.log(filteredLL);
+			
+
+
+			filteredLL.forEach(function(filteredLL) {
+				filteredLL = filteredLL.trim();
+				const finalCoords = filteredLL.split(",");
+				//console.log(filteredLL.slice(0,-4));
+			//	const indLL = filteredLL.split(",");
+			//	const filteredIndLL = indLL.filter(Boolean);
+				//console.log(filteredIndLL);
+			});
+			
+			
 	
+
+			
 			//add coords to map
 	
 			/*
