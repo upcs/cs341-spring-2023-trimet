@@ -1,8 +1,14 @@
 "use strict";
 
-// The app ID for accessing the live TriMet APIs. There's no point in hiding
-// this constant since it's placed directly in the GET query string, and
-// therefore is available for anyone to see.
+/**
+ * The app ID for accessing the live TriMet APIs.
+ *
+ * It is not necessary, or even particularly helpful, to hide this constant
+ * since it is placed directly in the GET query string of all of TriMet's APIs,
+ * and therefore it is trivially findable by anyone with the network inspect
+ * tool included in every major browser. In fact, it is far easier to use that
+ * tool than to search for the key in the JavaScript code.
+ */
 var APP_ID = "DB9C2B0467902CB970AD9CD6B";
 
 /**
@@ -23,10 +29,40 @@ function makeAppUrl(url, params) {
 }
 
 /**
- * Fetches a file from an external URL and returns a promise. For the time
- * being, callback functions for success and error are also called for
- * resolving and rejecting of the promise, respectively. If these are provided,
- * the promise will never resolve or reject.
+ * Defines an error that can be thrown from or returned in the error callback
+ * for fetchData() and associated functions.
+ *
+ * @prop url     The URL that caused the error.
+ * @prop message A summary of the fetching/HTTP error and/or parsing error.
+ */
+class FetchError extends Error {
+	constructor(url, message) {
+		super(`${url}: ${message}`);
+
+		this.name = "FetchError";
+		this.url = url;
+	}
+}
+
+/**
+ * Defines an error that occurs when a fetch times out.
+ *
+ * @prop url     The URL that timed out.
+ * @prop message A simple message explaining that the connection timed out.
+ */
+class TimeoutError extends FetchError {
+	constructor(url) {
+		super(url, `${url}: Request timed out`);
+
+		this.name = "TimeoutError";
+		this.url = url;
+	}
+}
+
+/**
+ * Fetches a file from an external URL and returns a promise. Alternatively,
+ * callback function for success and error can be used instead of the promise.
+ * If these are provided, the promise will never resolve or reject.
  *
  * The data can be interpreted as text, JSON, or XML.
  *
@@ -39,14 +75,19 @@ function makeAppUrl(url, params) {
  *                  "xml" for a XML document tree.
  * @param onSuccess (optional) The function to call on success. The fetched
  *                  string/object will be passed as the sole argument.
- * @param onError   (optional) The function to call on error. The error status
+ * @param onError   (optional) The function to call on error. The exception
  *                  will be passed as the sole argument.
+ *
+ * @throws FetchError or TimeoutError if the promise rejected. No errors are
+ *         thrown if callbacks are used.
  */
 function fetchData(url, dataType, onSuccess, onError) {
 	return new Promise((resolve, reject) => {
 		$.ajax({
+
 			// Fetch the URL as a raw text file with a four second timeout to avoid
 			// waiting forever.
+
 			url: url,
 			dataType: dataType,
 			timeout: 4000,
@@ -63,8 +104,15 @@ function fetchData(url, dataType, onSuccess, onError) {
 			// On error, call the error handler with error information combined
 			// into a single string, namely the URL, status summary, and status
 			// code.
-			error: (xhr, textStatus, statusCode) => {
-				const error = `Fetch "${url}" (${textStatus}) ${statusCode}`;
+			error: (xhr, category, code) => {
+				code = code || "unknown";
+
+				let error;
+				if (category === "timeout") {
+					error = new TimeoutError(url);
+				} else {
+					error = new FetchError(url, `(${category}) ${code}`);
+				}
 
 				if (onError) {
 					onError(error);
@@ -101,6 +149,14 @@ function fetchXml(url, onSuccess, onError) {
 }
 
 /**
+ * Fetches JSON from a TriMet live data service. It is identical to fetchData()
+ * with a url of `makeAppUrl(url, params)`.
+ */
+function fetchAppData(url, params, type, onSuccess, onError) {
+	return fetchData(makeAppUrl(url, params), type, onSuccess, onError);
+}
+
+/**
  * Fetches JSON from a TriMet live data service. It is identical to fetchJson()
  * with a url of `makeAppUrl(url, params)`.
  */
@@ -116,4 +172,87 @@ function fetchAppXml(url, params, onSuccess, onError) {
 	return fetchXml(makeAppUrl(url, params), onSuccess, onError);
 }
 
-//module.exports = {fetchData:fetchData,fetchAppXml:fetchAppXml,fetchXml:fetchXml,fetchText:fetchText};
+var RETRY_FETCH = 1000 * 2;
+var FAST_FETCH = 1000;
+var SLOW_FETCH = 1000 * 60;
+
+class Fetcher {
+	constructor(fetcher) {
+		this.fetcher = fetcher;
+		this.value = null;
+
+		this.pendingTimeout = null;
+
+		this.firstEvent = true;
+		this.events = {
+			first: [],
+			fetch: []
+		};
+	}
+
+	on(name, event) {
+		this.events[name].push(event);
+		return this;
+	}
+
+	single() {
+		this.cancel();
+		this._queueFetch(0, -1, true);
+		return this;
+	}
+
+	interval(time) {
+		this.cancel();
+		this._queueFetch(0, time, true);
+		return this;
+	}
+
+	cancel() {
+		if (this.pendingTimeout !== null) {
+			window.clearTimeout(this.pendingTimeout);
+			this.pendingTimeout = null;
+		}
+	}
+
+	async _callFetcher(interval) {
+		try {
+			this.value = await this.fetcher();
+
+			if (this.firstEvent) {
+				this._callEvents("first");
+				this.firstEvent = false;
+			}
+			this._callEvents("fetch");
+
+			if (interval >= 0) {
+				this._queueFetch(interval, interval);
+			} else {
+				this.pendingTimeout = null;
+			}
+		} catch (err) {
+			if (err instanceof FetchError) {
+				// TODO: Display message bar with error
+			} else {
+				throw err;
+			}
+
+			console.warn(err.message);
+
+			this._queueFetch(RETRY_FETCH, interval);
+		}
+	}
+
+	_queueFetch(wait, interval, force = false) {
+		if (force || this.pendingTimeout !== null) {
+			this.pendingTimeout = window.setTimeout(() => {
+				this._callFetcher(interval);
+			}, wait);
+		}
+	}
+
+	_callEvents(name) {
+		for (event of this.events[name]) {
+			event(this.value);
+		}
+	}
+}

@@ -1,46 +1,26 @@
 "use strict";
 
-/*code courtesy of https://alvarotrigo.com/blog/hamburger-menu-css/*/
-function menuOnClick() {
-	document.getElementById("menu-bar").classList.toggle("change");
-	document.getElementById("nav").classList.toggle("change");
-	document.getElementById("menu-bg").classList.toggle("change-bg");
-}
+// Show relevant dialog boxes when the information links in the header are
+// clicked.
+$("#info-how-to").on("click", e => {
+	new Dialog("How-To")
+		.add($template("tem-how-to"))
+		.accept()
+		.show();
+});
 
-function on() {
-	document.getElementById("overlay").style.display = "block";
-}
+$("#info-service-alerts").on("click", e => {
+	printAlertsTable();
+});
 
-  function off() {
-	document.getElementById("overlay").style.display = "none";
-} 
+$("#info-about").on("click", e => {
+	new Dialog("About")
+		.add($template("tem-about"))
+		.accept()
+		.show();
+});
 
-function exitAlertsOnClick() {
-	$('#alerts-window').hide();
-}
-
-function alertsPopupOnClick() {
-	$('#alerts-window').show();
-	$('#how-to-window').hide();
-	$('#about-window').hide();
-}
-
-function howToPopupOnClick(){
-	$('#how-to-window').show();
-	$('#alerts-window').hide();
-	$('#about-window').hide();
-}
-
-function exitHowToOnClick(){
-	$('#how-to-window').hide();
-}
-
-function aboutPopupOnClick(){
-	$('#about-window').show();
-	$('#how-to-window').hide();
-	$('#alerts-window').hide();
-}
-
-function exitAboutOnClick(){
-	$('#about-window').hide();
-}
+// Make our tab controller for the sidebar tabs.
+var sidebarTabs = new TabList("sidebar")
+	.bindButtons()
+	.openTab("routes");

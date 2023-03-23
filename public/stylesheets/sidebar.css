@@ -1,0 +1,116 @@
+#sidebar {
+	grid-area: 2 / 1 / 3 / 2;
+
+	border-right: 2px solid var(--primary-border);
+	background-color: var(--primary-bg);
+	color: var(--primary-fg);
+}
+
+#sidebar > :not([data-shown]) {
+	display: none;
+}
+
+.light-button {
+	padding: 2px 7px;
+	border: 1px solid transparent;
+	border-radius: 3px;
+
+	background-color: var(--accent-bg);
+	color: var(--accent-fg);
+
+	cursor: pointer;
+}
+
+.light-button:hover {
+	border-color: var(--selector-hover-border);
+}
+
+.light-button:active {
+	border-color: var(--selector-active-border);
+}
+
+#routes-sidebar, #routes-sidebar > div {
+	display: flex;
+	flex-direction: column;
+
+	height: 100%;
+}
+
+#routes-sidebar > :not([data-shown]) {
+	display: none;
+}
+
+#routes-loading-box {
+	padding: 5px;
+}
+
+#routes-list-header {
+	padding: 5px;
+	border-bottom: 2px solid var(--primary-border);
+}
+
+#routes-search {
+	margin: 0 20px;
+	width: calc(100% - 40px);
+}
+
+#dir-lists {
+	display: flex;
+	flex-direction: column;
+
+	overflow-y: auto;
+}
+
+#routes-list,
+#dir-lists > div {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+
+	padding: 4px 7px;
+
+	overflow-y: auto;
+}
+
+#routes-list > button,
+#dir-lists > div > button {
+	text-align: left;
+}
+
+#dir-lists > div:not([data-shown]) {
+	display: none;
+}
+
+#dir-header {
+	padding: 5px;
+}
+
+#dir-chosen {
+	text-align: center;
+}
+
+#dir-selector {
+	display: flex;
+
+	background-color: var(--accent-bg);
+	color: var(--accent-fg);
+}
+
+#dir-selector > button {
+	width: 100%;
+
+	padding: 7px 0 5px 0;
+	border-bottom: 4px solid transparent;
+
+	text-align: center;
+	cursor: pointer;
+}
+
+#dir-selector > button:hover {
+	border-color: var(--selector-hover-border);
+}
+
+#dir-selector > button[data-shown],
+#dir-selector > button:active {
+	border-color: var(--selector-active-border);
+}
