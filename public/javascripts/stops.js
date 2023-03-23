@@ -53,11 +53,9 @@ function mappingStops(){
 	var coords;
 	var typeTemp;
 	var type;
-	var bus = 'BUS';
 	var i = 0;
 	//we know how many stops there are
 	for (i = 0; i < 6468; i++) {
-		//console.log("iteration: " + i);
 
 		temp = stops[i].getElementsByTagName("Point")[0];
 		tempCoords = temp.getElementsByTagName("coordinates")[0];
@@ -141,4 +139,7 @@ function mappingStops(){
 	function(status) {
 		console.log("mappingStops.js error: " + status);
 	});
+
 }
+
+mappingStops();

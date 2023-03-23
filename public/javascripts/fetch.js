@@ -45,11 +45,11 @@ function makeAppUrl(url, params) {
 function fetchData(url, dataType, onSuccess, onError) {
 	return new Promise((resolve, reject) => {
 		$.ajax({
-			// Fetch the URL as a raw text file with a two second timeout to avoid
+			// Fetch the URL as a raw text file with a four second timeout to avoid
 			// waiting forever.
 			url: url,
 			dataType: dataType,
-			timeout: 2000,
+			timeout: 4000,
 
 			// On success, pass the text directly to the success handler.
 			success: (data, statusCode, xhr) => {
