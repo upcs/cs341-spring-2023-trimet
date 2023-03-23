@@ -10,3 +10,5 @@
 @import "sidebar.css";
 /* Styles dialogs/messages and their associated elements. */
 @import "dialogs.css";
+/* Styles the service alerts table. */
+@import "alerts.css";

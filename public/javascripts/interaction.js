@@ -10,10 +10,7 @@ $("#info-how-to").on("click", e => {
 });
 
 $("#info-service-alerts").on("click", e => {
-	new Dialog("Service Alerts")
-		.text("Not implemented")
-		.button("Waah, I'm so sad!")
-		.show();
+	printAlertsTable();
 });
 
 $("#info-about").on("click", e => {
