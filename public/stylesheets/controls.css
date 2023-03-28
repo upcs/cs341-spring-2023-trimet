@@ -110,3 +110,50 @@ span.loading {
 		background-position: 0;
 	}
 }
+
+.light-button {
+	padding: 2px 7px;
+	border: 1px solid transparent;
+	border-radius: 3px;
+
+	background-color: var(--accent-bg);
+	color: var(--accent-fg);
+
+	cursor: pointer;
+}
+
+.light-button:focus,
+.light-button:hover {
+	border-color: var(--selector-hover-border);
+}
+
+.light-button:active {
+	border-color: var(--selector-active-border);
+}
+
+.selector {
+	display: flex;
+
+	background-color: var(--accent-bg);
+	color: var(--accent-fg);
+}
+
+.selector > button {
+	width: 100%;
+
+	padding: 7px 0 5px 0;
+	border-bottom: 4px solid transparent;
+
+	text-align: center;
+	cursor: pointer;
+}
+
+.selector > button:focus,
+.selector > button:hover {
+	border-color: var(--selector-hover-border);
+}
+
+.selector > button[data-shown],
+.selector > button:active {
+	border-color: var(--selector-active-border);
+}
