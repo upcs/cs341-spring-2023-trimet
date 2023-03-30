@@ -19,10 +19,11 @@
 			crossorigin=""></script>
 
 		<!-- Then, we can commence loading our scripts in order of usage.
-			First, we load the scripts that contain utility functions but don't
-			do any fetching or DOM modification. -->
+			First, we load the scripts with important utilities that most other
+			scripts depend on. -->
 		<script defer src="/javascripts/util.js"></script>
 		<script defer src="/javascripts/fetch.js"></script>
+		<script defer src="/javascripts/dataManager.js"></script>
 		<script defer src="/javascripts/uiHelpers.js"></script>
 
 		<!-- Finally, load the files that handle the DOM and map. -->
@@ -38,8 +39,14 @@
 			like dialogs, and hidden content are stored outside of the main
 			grid.  -->
 		<main>
-			<!-- Space for holding the map. -->
-			<div id="map"></div>
+			<!-- Sidebar selector containing buttons for choosing what to
+				display in the sidebar, controlled by a TabList. -->
+			<div id="selector-bg"></div>
+			<nav id="selector" data-tablist="sidebar">
+				<button class="special">Tracker</button>
+				<button class="special">Stops</button>
+				<button class="special" data-tab="routes">Routes</button>
+			</nav>
 
 			<!-- Top bar containing the title of the application and buttons
 				for pop-ups. -->
@@ -53,36 +60,31 @@
 				</nav>
 			</header>
 
-			<!-- Sidebar selector containing buttons for choosing what to
-				display in the sidebar, controlled by a TabList. -->
-			<div id="selector-bg"></div>
-			<nav id="selector" data-tablist="sidebar">
-				<button class="special">Tracker</button>
-				<button class="special">Stops</button>
-				<button class="special" data-tab="routes">Routes</button>
-			</nav>
-
 			<!-- The sidebar; this is controlled by the same TabList as the
 				sidebar selector. -->
 			<div id="sidebar" data-tablist="sidebar">
-				<div id="routes-sidebar" data-tab="routes">
-					<div id="routes-loading-box" data-shown>
-						<div class="loading">Loading routes...</div>
-					</div>
-					<div id="routes-list-box">
-						<div id="routes-list-header">
+				<!-- Routes sidebar; contains subpages for routes and stops for
+					each route in both directions. -->
+				<div id="routes-sidebar" data-tab="routes" data-tablist="routes-pages">
+					<!-- Routes subpage for showing the list of routes. -->
+					<div data-tab="routes">
+						<div id="routes-header">
 							<input id="routes-search" type="search" placeholder="Search for route" />
+							<button id="routes-clear-search" class="special light-button">&#xD7;</button>
 						</div>
 						<div id="routes-list">
-							<button>Route</button>
+							<div class="loading">Loading routes...</div>
 						</div>
 					</div>
-					<div id="dir-box">
+
+					<!-- Routes subpage for showing the list of stops in a
+						route in both directions. -->
+					<div data-tab="dirs">
 						<div id="dir-header">
 							<button id="dir-back" class="special light-button">&#x2190;</button>
 							<div id="dir-chosen"></div>
 						</div>
-						<div id="dir-selector" data-tablist="routes-dir">
+						<div class="selector" data-tablist="routes-dir">
 							<button id="dir-0-selector" class="special" data-tab="dir-0"></button>
 							<button id="dir-1-selector" class="special" data-tab="dir-1"></button>
 						</div>
@@ -93,6 +95,9 @@
 					</div>
 				</div>
 			</div>
+
+			<!-- Space for holding the map. -->
+			<div id="map"></div>
 		</main>
 
 		<!-- The container for holding modal dialog boxes. It will only be
@@ -167,7 +172,7 @@
 			</div>
 		</template>
 
-		<!-- The initial "loading" message bar shown while static data is being
+		<!-- The initial loading message bar shown while static data is being
 			fetched. -->
 		<template id="tem-loading-message">
 			Loading data... <span class="loading" style="width: 400px"></span>

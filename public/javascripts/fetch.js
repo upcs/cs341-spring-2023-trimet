@@ -24,235 +24,154 @@ var APP_ID = "DB9C2B0467902CB970AD9CD6B";
  * @return The new URL.
  */
 function makeAppUrl(url, params) {
-	const fullParams = Object.assign({}, {appID: APP_ID}, params);
+	const fullParams = Object.assign({appID: APP_ID}, params);
 	return url + "?" + $.param(fullParams);
 }
 
-/**
- * Defines an error that can be thrown from or returned in the error callback
- * for fetchData() and associated functions.
- *
- * @prop url     The URL that caused the error.
- * @prop message A summary of the fetching/HTTP error and/or parsing error.
- */
-class FetchError extends Error {
-	constructor(url, message) {
-		super(`${url}: ${message}`);
+/** Time in seconds defining how long fetchData() will wait after a failed
+ * fetch before trying again. Defined as two seconds. */
+var RETRY_FETCH = 1000 * 2;
 
-		this.name = "FetchError";
-		this.url = url;
-	}
-}
+/** Time in seconds before a fetch will timeout. Defined as ten seconds because
+ * anything longer than that will result in an unusably slow fetch. */
+var FETCH_TIMEOUT = 1000 * 10;
+
+/** Function hook that is called by `fetchData()` on successful fetch. */
+var onFetchSuccess = () => {};
+/** Function hook that is called by `fetchData()` each time on failure. */
+var onFetchFailure = (err) => {};
 
 /**
- * Defines an error that occurs when a fetch times out.
+ * Fetches a file from an external URL and returns a promise, parsing the data
+ * as text, JSON, or XML. Optionally, if the fetch fails or times out, this
+ * function can wait and retry the fetch again until the fetch succeeds.
  *
- * @prop url     The URL that timed out.
- * @prop message A simple message explaining that the connection timed out.
- */
-class TimeoutError extends FetchError {
-	constructor(url) {
-		super(url, `${url}: Request timed out`);
-
-		this.name = "TimeoutError";
-		this.url = url;
-	}
-}
-
-/**
- * Fetches a file from an external URL and returns a promise. Alternatively,
- * callback function for success and error can be used instead of the promise.
- * If these are provided, the promise will never resolve or reject.
+ * See fetchText(), fetchJson(), and fetchXml() for function alternatives with
+ * simpler call signatures. Also see fetchAppJson() and fetchAppXml() for
+ * variants that use makeAppUrl().
  *
- * The data can be interpreted as text, JSON, or XML.
- *
- * Also see fetchText(), fetchJson(), and fetchXml() for function alternatives
- * with simpler call signatures.
- *
- * @param url       The URL to fetch the text file from.
+ * @param url       The URL to fetch the data from.
  * @param dataType  Determines how to interpret the fetched data. Can be either
  *                  "text" for a string, "json" for a JavaScript object, or
- *                  "xml" for a XML document tree.
- * @param onSuccess (optional) The function to call on success. The fetched
- *                  string/object will be passed as the sole argument.
- * @param onError   (optional) The function to call on error. The exception
- *                  will be passed as the sole argument.
- *
- * @throws FetchError or TimeoutError if the promise rejected. No errors are
- *         thrown if callbacks are used.
+ *                  "xml" for an XML document tree.
+ * @param retry     (optional) If true, the fetch will be retried on error
+ *                  until success. If false, an error object is thrown.
+ *                  Defaults to true.
+ * @return A promise that resolves to the data being fetched. If the fetch can
+ *         never succeed, the function will never return.
+ * @throws If `retry` is false and the fetch fails, an object containing two
+ *         string values, `category` and `code` for jQuery category and HTTP
+ *         status respectively, will be thrown.
  */
-function fetchData(url, dataType, onSuccess, onError) {
+async function fetchData(url, dataType, retry = true) {
+	// Enter an indefinite loop to repeatedly attempt to fetch the data until
+	// we succeed.
+	while (true) {
+		try {
+			// Asynchronously await the actual fetch using a promise wrapper
+			// around jQuery's callback-based AJAX API
+			let data = await fetchPromise(url, dataType);
+
+			// If we succeeded without throwing an error, call the success hook
+			// and return the data.
+			onFetchSuccess();
+			return data;
+		} catch (err) {
+			// If the fetch failed and the promise rejected, catch that error
+			// and handle it. Regardless of whether we retry the fetch or not,
+			// display the error message bar.
+			onFetchFailure(err);
+
+			if (retry) {
+				// If we want to retry the fetch, just log a warning about the
+				// failed fetch and continue on.
+				console.warn(`fetchData("${url}", "${dataType}"): ` +
+					`(${err.category}) ${err.code}`);
+			} else {
+				// If we don't want to retry, just propagate the error.
+				throw err;
+			}
+		}
+
+		// If we reach this point in the code, we are retrying after a failed
+		// fetch. Wait for a bit before repeating the loop.
+		await delay(RETRY_FETCH);
+	}
+}
+
+/**
+ * Internal helper function for fetchData(); calls jQuery's AJAX API with the
+ * specified URL and data type and returns a promise that will resolve or
+ * reject based on the result of that call.
+ *
+ * @param url      The URL to fetch the data from.
+ * @param dataType The data type to instruct jQuery to interpret the data as.
+ * @return A promise that will resolve when jQuery's AJAX callbacks run.
+ */
+function fetchPromise(url, dataType) {
 	return new Promise((resolve, reject) => {
 		$.ajax({
-
-			// Fetch the URL as a raw text file with a four second timeout to avoid
-			// waiting forever.
-
+    
+			// Provide the URL and data type verbatim. We also provide
+			// a timeout so the fetch doesn't try to resolve for
+			// inordinately long amounts of time.
 			url: url,
 			dataType: dataType,
-			timeout: 4000,
+			timeout: FETCH_TIMEOUT,
 
-			// On success, pass the text directly to the success handler.
+			// On success, simply resolve the promise.
 			success: (data, statusCode, xhr) => {
-				if (onSuccess) {
-					onSuccess(data);
-				} else {
-					resolve(data);
-				}
+				resolve(data);
 			},
 
-			// On error, call the error handler with error information combined
-			// into a single string, namely the URL, status summary, and status
-			// code.
+			// On error, reject the promise with an error message
+			// object containing information about the error.
 			error: (xhr, category, code) => {
-				code = code || "unknown";
-
-				let error;
-				if (category === "timeout") {
-					error = new TimeoutError(url);
-				} else {
-					error = new FetchError(url, `(${category}) ${code}`);
-				}
-
-				if (onError) {
-					onError(error);
-				} else {
-					reject(error);
-				}
+				reject({
+					category: category,
+					code: code || "unknown",
+				});
 			},
 		});
-	});
+	})
 }
 
 /**
  * Fetches text from an external URL. It is identical to fetchData() with a
  * dataType of "text".
  */
-function fetchText(url, onSuccess, onError) {
-	return fetchData(url, "text", onSuccess, onError);
+function fetchText(url, retry) {
+	return fetchData(url, "text", retry);
 }
 
 /**
  * Fetches JSON from an external URL. It is identical to fetchData() with a
  * dataType of "text".
  */
-function fetchJson(url, onSuccess, onError) {
-	return fetchData(url, "json", onSuccess, onError);
+function fetchJson(url, retry) {
+	return fetchData(url, "json", retry);
 }
 
 /**
  * Fetches XML from an external URL. It is identical to fetchData() with a
  * dataType of "xml".
  */
-function fetchXml(url, onSuccess, onError) {
-	return fetchData(url, "xml", onSuccess, onError);
-}
-
-/**
- * Fetches JSON from a TriMet live data service. It is identical to fetchData()
- * with a url of `makeAppUrl(url, params)`.
- */
-function fetchAppData(url, params, type, onSuccess, onError) {
-	return fetchData(makeAppUrl(url, params), type, onSuccess, onError);
+function fetchXml(url, retry) {
+	return fetchData(url, "xml", retry);
 }
 
 /**
  * Fetches JSON from a TriMet live data service. It is identical to fetchJson()
  * with a url of `makeAppUrl(url, params)`.
  */
-function fetchAppJson(url, params, onSuccess, onError) {
-	return fetchJson(makeAppUrl(url, params), onSuccess, onError);
+function fetchAppJson(url, params, retry) {
+	return fetchJson(makeAppUrl(url, params), retry);
 }
 
 /**
  * Fetches XML from a TriMet live data service. It is identical to fetchXml()
  * with a url of `makeAppUrl(url, params)`.
  */
-function fetchAppXml(url, params, onSuccess, onError) {
-	return fetchXml(makeAppUrl(url, params), onSuccess, onError);
-}
-
-var RETRY_FETCH = 1000 * 2;
-var FAST_FETCH = 1000;
-var SLOW_FETCH = 1000 * 60;
-
-class Fetcher {
-	constructor(fetcher) {
-		this.fetcher = fetcher;
-		this.value = null;
-
-		this.pendingTimeout = null;
-
-		this.firstEvent = true;
-		this.events = {
-			first: [],
-			fetch: []
-		};
-	}
-
-	on(name, event) {
-		this.events[name].push(event);
-		return this;
-	}
-
-	single() {
-		this.cancel();
-		this._queueFetch(0, -1, true);
-		return this;
-	}
-
-	interval(time) {
-		this.cancel();
-		this._queueFetch(0, time, true);
-		return this;
-	}
-
-	cancel() {
-		if (this.pendingTimeout !== null) {
-			window.clearTimeout(this.pendingTimeout);
-			this.pendingTimeout = null;
-		}
-	}
-
-	async _callFetcher(interval) {
-		try {
-			this.value = await this.fetcher();
-
-			if (this.firstEvent) {
-				this._callEvents("first");
-				this.firstEvent = false;
-			}
-			this._callEvents("fetch");
-
-			if (interval >= 0) {
-				this._queueFetch(interval, interval);
-			} else {
-				this.pendingTimeout = null;
-			}
-		} catch (err) {
-			if (err instanceof FetchError) {
-				// TODO: Display message bar with error
-			} else {
-				throw err;
-			}
-
-			console.warn(err.message);
-
-			this._queueFetch(RETRY_FETCH, interval);
-		}
-	}
-
-	_queueFetch(wait, interval, force = false) {
-		if (force || this.pendingTimeout !== null) {
-			this.pendingTimeout = window.setTimeout(() => {
-				this._callFetcher(interval);
-			}, wait);
-		}
-	}
-
-	_callEvents(name) {
-		for (event of this.events[name]) {
-			event(this.value);
-		}
-	}
+function fetchAppXml(url, params, retry) {
+	return fetchXml(makeAppUrl(url, params), retry);
 }

@@ -73,6 +73,7 @@
 	cursor: pointer;
 }
 
+#selector > button:focus,
 #selector > button:hover {
 	border-color: var(--selector-hover-border);
 }

@@ -3,5 +3,6 @@
 // management.
 exports.testUrls = [
 	"https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js",
+	"javascripts/util.js",
 	"javascripts/fetch.js",
 ];
