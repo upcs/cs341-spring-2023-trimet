@@ -52,7 +52,7 @@ function mappingStops(){
 	var type;
 	var i = 0;
 	//we know how many stops there are
-	for (i = 0; i < 6468; i++) {
+	for (i = 0; i < 6466; i++) {
 
 		coords = stops[i].getElementsByTagName("Point")[0];
 		coords = coords.getElementsByTagName("coordinates")[0];
