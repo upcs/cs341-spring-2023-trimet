@@ -1,4 +1,5 @@
 /* Styles each of the relevent tabs on the sidebar. */
+@import "stops.css";
 @import "routes.css";
 
 #sidebar {
