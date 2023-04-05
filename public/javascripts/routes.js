@@ -5,21 +5,30 @@ function mappingRoutes(){
 	function(xml) {
 
 	var placemarkList = xml.querySelectorAll("Placemark")
-	//console.log(placemarkList);
+	console.log(placemarkList);
 
 	var placemark;
 	var coordList;
 	var coords;
-	//we know how many stops there are
+	var extendedData
+	//iterate through each placemark
 	for (placemark of placemarkList) {
 		coordList = placemark.querySelectorAll("coordinates");
 		//console.log(coordList);
+		extendedData = placemark.querySelectorAll("ExtendedData");
+		nameList = extendedData.getElementsByName("type");
+		console.log(nameList);
+
+		
+		//find coordinates
 		for(coords of coordList){
 			var finalCoords = [];
 			//console.log(coords.textContent);
 			coords = coords.textContent;
 			const myArray = coords.split(" ");
 			//console.log(myArray);
+
+			//splice into final array
 			for(let i = 0; i < myArray.length; i++){
 				myArray[i] = myArray[i].slice(0,-4);
 				//console.log(myArray[i]);
