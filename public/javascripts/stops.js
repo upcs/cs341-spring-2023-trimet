@@ -1,139 +1,101 @@
 "use strict";
-/**
- * A js file that interacts with the map to display icons at each coordinate
- * for a transit stop.
- * utilizes lots of fetch.js functions to grab data from trimet.
-/////////////////////////////////////////////////////////////////////////
- * Gets all BUSc MAX, Street-Car, and Commuter-Rail stops using the
- * function to fetch xml data from the trimet database
- */
 
-//still need an event handler but for on load of the map
+var markerColors = {
+	unknown: "#000000",
+	MAX: "#D81B60",
+	BUS: "#1E88E5",
+	CR: "#E0A905",
+	SC: "#00B307",
+	BSC: "#777777",
+	AT: "#8931EF",
+};
 
-/*
-'item' inside the foreach loop is the following (it's an example with values)
+var stopsById = {};
+var stopsByOrder = [];
 
-<Placemark id="135411">
-	<name>SW 35th &amp; Indian Hills Apts</name>
-	<ExtendedData>
-		<Data name="stop_id">
-			<value>7420</value>
-		</Data>
-		<Data name="stop_name">
-			<value>SW 35th &amp; Indian Hills Apts</value>
-		</Data>
-		<Data name="jurisdiction">
-			<value>Portland</value>
-		</Data>
-		<Data name="zipcode">
-			<value>97219</value>
-		</Data>
-		<Data name="type">
-			<value>BUS</value>
-		</Data>
-	</ExtendedData>
-	<Point id="135410">
-		<coordinates>-122.71156858794033,45.455159579271324,0.0</coordinates>
-	</Point>
-</Placemark>
-
-we just want coordinates for now
-*/
-
-function mappingStops(xml){
-	var xmlDoc = xml.documentElement;
-	var stops = xmlDoc.getElementsByTagName("Placemark");
-
-	var coords;
-	var type;
-	var i = 0;
-	//we know how many stops there are
-	for (i = 0; i < stops.length; i++) {
-
-		coords = stops[i].getElementsByTagName("Point")[0];
-		coords = coords.getElementsByTagName("coordinates")[0];
-
-		//access the extended data to get the type of stop
-		type = stops[i].getElementsByTagName("ExtendedData")[0];
-		type = type.getElementsByTagName("Data")[4];
-		type = type.getElementsByTagName("value")[0];
-
-
-		//remove ending coords, break up long and lat
-		coords = coords.textContent.slice(0, -4);
-		const myArray = coords.split(",");
-	
-
-		//add coords to map
-
-		//red
-		if(type.textContent == "MAX"){
-			var circle = L.circle([myArray[1], myArray[0]], {
-				color: '#E11845',
-				fillColor: '#E11845',
-				fillOpacity: 1,
-				radius: 5
-			}).addTo(map);
-		}
-
-		//blue
-		if(type.textContent == "BUS"){
-			var circle = L.circle([myArray[1], myArray[0]], {
-				color: '#0057E9',
-				fillColor: '#0057E9',
-				fillOpacity: 1,
-				radius: 5
-			}).addTo(map);
-		}
-
-		//purple
-		if(type.textContent == "CR"){
-			var circle = L.circle([myArray[1], myArray[0]], {
-				color: '#8931EF',
-				fillColor: '#8931EF',
-				fillOpacity: 1,
-				radius: 5
-			}).addTo(map);
-		}
-
-		//yellow
-		if(type.textContent == "SC"){
-			var circle = L.circle([myArray[1], myArray[0]], {
-				color: '#F2CA19',
-				fillColor: '#F2CA19',
-				fillOpacity: 1,
-				radius: 5
-			}).addTo(map);
-		}
-
-		//green
-		if(type.textContent == "BSC"){
-			var circle = L.circle([myArray[1], myArray[0]], {
-				color: '#87E911',
-				fillColor: '#87E911',
-				fillOpacity: 1,
-				radius: 5
-			}).addTo(map);
-		}
-
-		//pink
-		if(type.textContent == "AT"){
-			var circle = L.circle([myArray[1], myArray[0]], {
-				color: '#FF00BD',
-				fillColor: '#FF00BD',
-				fillOpacity: 1,
-				radius: 5
-			}).addTo(map);
-		}
-
+class Stop {
+	constructor(id) {
+		this.id = id;
 	}
 
+	constructRouteStops(stopNode) {
+		this.desc = stopNode.getAttribute("desc");
+		this.routes = [];
+
+		this.coords = [
+			parseFloat(stopNode.getAttribute("lat")),
+			parseFloat(stopNode.getAttribute("lng"))
+		];
+
+		this.marker = L.circle(this.coords, {
+			radius: 5,
+			color: markerColors.unknown,
+			fillColor: markerColors.unknown,
+			fillOpacity: 1,
+		});
+	}
+
+	constructMapData(placemarkNode) {
+		let typeNode = placemarkNode.querySelector("[name='type'] > value");
+		let color = markerColors[typeNode.textContent];
+
+		this.marker.setStyle({
+			color: color,
+			fillColor: color,
+		});
+	}
+
+	constructParentRoute(route) {
+		this.routes.push(route);
+	}
+
+	showMarker() {
+		this.marker.addTo(map);
+	}
+
+	hideMarker() {
+		this.marker.remove();
+	}
 }
+
+function createStops(data) {
+	let stopNodes = data.routeStops.querySelectorAll("stop");
+	for (let stopNode of stopNodes) {
+		let id = stopNode.getAttribute("locid");
+		if (id in stopsById) {
+			continue;
+		}
+
+		let stop = new Stop(id);
+		stopsById[id] = stop;
+		stopsByOrder.push(stop);
+
+		stop.constructRouteStops(stopNode);
+	}
+
+	let placemarkNodes = data.stopCoords.querySelectorAll("Placemark");
+	for (let placemarkNode of placemarkNodes) {
+		let id = placemarkNode.querySelector("[name='stop_id'] > value").textContent;
+
+		// The geo data XML file has stops that the routes/stops XML file does
+		// not, such as for the Aerial Tram. So, ignore any missing IDs.
+		if (id in stopsById) {
+			stopsById[id].constructMapData(placemarkNode);
+		}
+	}
+}
+
+staticFetch.addData("routeStops",
+	() => fetchAppXml("https://developer.trimet.org/ws/V1/routeConfig", {
+		stops: true,
+		dir: true,
+	})
+);
 
 staticFetch.addData("stopCoords",
 	() => fetchXml("https://developer.trimet.org/gis/data/tm_stops.kml")
 );
-  
+
 staticFetch.onFetch(data => {
-	mappingStops(data.stopCoords);
+	createStops(data);
 });

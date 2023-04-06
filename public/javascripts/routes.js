@@ -1,76 +1,130 @@
 "use strict";
 
-function mappingRoutes(xml){
-	var placemarkList = xml.querySelectorAll("Placemark")
+var routesById = {};
+var routesByOrder = [];
 
-	var placemark;
-	var coordList;
-	var coords;
-	var type;
-	
+class RouteDir {
+	constructor(route, dir, dirNode) {
+		this.route = route;
+		this.dir = dir;
 
-	//iterate through each placemark
-	for (placemark of placemarkList) {
-		coordList = placemark.querySelectorAll("coordinates");
-		type = placemark.querySelector("[name='type'] > value");
-		
-		type = type.textContent
-		
-		//find coordinates
-		for(coords of coordList){
-			var finalCoords = [];
-			coords = coords.textContent;
-			const myArray = coords.split(" ");
+		this.desc = dirNode.getAttribute("desc");
 
-			//splice into final array
-			for(let i = 0; i < myArray.length; i++){
-				myArray[i] = myArray[i].slice(0,-4);
-				const coordArray = myArray[i].split(",");
-				finalCoords.push([coordArray[1], coordArray[0]]);
-			}
+		this.stops = [];
+		this.buttons = [];
 
-			//var polyline = L.polyline(finalCoords, {color: '#FF00BD'}).addTo(map);
-			
-			//draw the line
-        	//color code
+		for (let stopNode of dirNode.children) {
+			let id = stopNode.getAttribute("locid");
+			let stop = stopsById[id];
 
-			if(type == "MAX"){
-				var polyline = L.polyline(finalCoords, {color: '#E11845'}).addTo(map);
-			}
+			this.stops.push(stop);
+			stop.constructParentRoute(this);
 
-			//blue
-			if(type == "BUS"){
-				var polyline = L.polyline(finalCoords, {color: '#0057E9'}).addTo(map);
-			}
-
-			//purple
-			if(type == "CR"){
-				var polyline = L.polyline(finalCoords, {color: '#8931EF'}).addTo(map);
-			}
-
-			//yellow
-			if(type == "SC"){
-				var polyline = L.polyline(finalCoords, {color: '#F2CA19'}).addTo(map);
-			}
-
-			//green
-			if(type == "BSC"){
-				var polyline = L.polyline(finalCoords, {color: '#87E911'}).addTo(map);
-			}
-
-			//pink
-			if(type == "AT"){
-				var polyline = L.polyline(finalCoords, {color: '#FF00BD'}).addTo(map);
-			}
-
+			let button = $("<button>")
+				.text(stop.desc);
+			this.buttons.push(button);
 		}
+	}
+}
+
+class Route {
+	constructor(id) {
+		this.id = id;
+	}
+
+	constructRouteStops(routeNode) {
+		this.desc = routeNode.getAttribute("desc");
+		this.routeSubType = routeNode.getAttribute("routeSubType");
+
+		this.dirs = {};
+		this.stops = [];
+
+		for (let dirNode of routeNode.children) {
+			let dir = dirNode.getAttribute("dir");
+
+			let routeDir = new RouteDir(this, dir, dirNode);
+			this.dirs[dir] = routeDir;
+
+			this.stops = this.stops.concat(routeDir.stops);
+		}
+
+		this.lines = [];
+		this.polylines = [];
+	}
+
+	constructMapData(placemarkNode) {
+		let coordsNodes = placemarkNode.querySelectorAll("coordinates");
+
+		let typeNode = placemarkNode.querySelector("[name='type'] > value");
+		let color = markerColors[typeNode.textContent];
+
+		for (let coordsNode of coordsNodes) {
+			let points = coordsNode.textContent.split(" ");
+			let line = [];
+
+			for (let point of points) {
+				let flipped = point
+					.split(",")
+					.map(s => parseFloat(s));
+
+				line.push([flipped[1], flipped[0]]);
+			}
+
+			let polyline = L.polyline(line, {
+				weight: 4,
+				color: color,
+			});
+
+			this.lines.push(line);
+			this.polylines.push(polyline);
+		}
+	}
+
+	constructElems() {
+		this.button = $("<button>")
+			.text(this.desc);
+	}
+
+	showLines() {
+		this.polylines.forEach(p => p.addTo(map));
+	}
+
+	hideLines() {
+		this.polylines.forEach(p => p.remove());
+	}
+}
+
+function createRoutes(data) {
+	let routeNodes = data.routeStops.querySelectorAll("route");
+	for (let routeNode of routeNodes) {
+		let id = routeNode.getAttribute("id");
+
+		let route = new Route(id);
+		routesById[id] = route;
+		routesByOrder.push(route);
+
+		route.constructRouteStops(routeNode);
+	}
+
+	let placemarkNodes = data.routeCoords.querySelectorAll("Placemark");
+	for (let placemarkNode of placemarkNodes) {
+		let id = placemarkNode.querySelector("[name='route_number'] > value").textContent;
+
+		// See createStops() for the reason behind this if statement.
+		if (id in routesById) {
+			routesById[id].constructMapData(placemarkNode);
+		}
+	}
+
+	for (let route of routesByOrder) {
+		route.constructElems();
 	}
 }
 
 staticFetch.addData("routeCoords",
 	() => fetchXml("https://developer.trimet.org/gis/data/tm_routes.kml")
 );
-  
+
 staticFetch.onFetch(data => {
-	mappingRoutes(data.routeCoords);
+	createRoutes(data);
 });
