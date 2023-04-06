@@ -1,5 +1,32 @@
 "use strict";
 
+var routesById = {};
+var routesByOrder = [];
+
+class RouteDir {
+	constructor(route, dir, dirNode) {
+		this.route = route;
+		this.dir = dir;
+
+		this.desc = dirNode.getAttribute("desc");
+
+		this.stops = [];
+		this.buttons = [];
+
+		for (let stopNode of dirNode.children) {
+			let id = stopNode.getAttribute("locid");
+			let stop = stopsById[id];
+
+			this.stops.push(stop);
+			stop.constructParentRoute(this);
+
+			let button = $("<button>")
+				.text(stop.desc);
+			this.buttons.push(button);
+		}
+	}
+}
+
 class Route {
 	constructor(id) {
 		this.id = id;
@@ -9,68 +36,74 @@ class Route {
 		this.desc = routeNode.getAttribute("desc");
 		this.routeSubType = routeNode.getAttribute("routeSubType");
 
-		this.stops = [[], []];
+		this.dirs = {};
+		this.stops = [];
 
 		for (let dirNode of routeNode.children) {
 			let dir = dirNode.getAttribute("dir");
-			let stopList = this.stops[dir];
 
-			for (let stopNode of dirNode.children) {
-				let id = stopNode.getAttribute("locid");
-				let stop = allStops[id];
+			let routeDir = new RouteDir(this, dir, dirNode);
+			this.dirs[dir] = routeDir;
 
-				stopList.push(stop);
-				stop.addParentRoute(this);
-			}
+			this.stops = this.stops.concat(routeDir.stops);
 		}
+
+		this.lines = [];
+		this.polylines = [];
 	}
 
 	constructMapData(placemarkNode) {
-		var coordList;
-		var coords;
-		var type;
+		let coordsNodes = placemarkNode.querySelectorAll("coordinates");
 
-		this.lines = [];
-		
-		coordList = placemarkNode.querySelectorAll("coordinates");
-		type = placemarkNode.querySelector("[name='type'] > value");
-				
-		//find coordinates
-		for(coords of coordList){
-			var finalCoords = [];
-			coords = coords.textContent;
-			const myArray = coords.split(" ");
+		let typeNode = placemarkNode.querySelector("[name='type'] > value");
+		let color = markerColors[typeNode.textContent];
 
-			//splice into final array
-			for(let i = 0; i < myArray.length; i++){
-				myArray[i] = myArray[i].slice(0,-4);
-				const coordArray = myArray[i].split(",");
-				finalCoords.push([coordArray[1], coordArray[0]]);
+		for (let coordsNode of coordsNodes) {
+			let points = coordsNode.textContent.split(" ");
+			let line = [];
+
+			for (let point of points) {
+				let flipped = point
+					.split(",")
+					.map(s => parseFloat(s));
+
+				line.push([flipped[1], flipped[0]]);
 			}
-			
-			//draw the line
-        	//color code
 
-			let color = markerColors[type.textContent];
+			let polyline = L.polyline(line, {
+				weight: 4,
+				color: color,
+			});
 
-			this.polyline = L.polyline(finalCoords, {color}).addTo(map);
+			this.lines.push(line);
+			this.polylines.push(polyline);
 		}
 	}
 
-	constructFinal() {
-		// TODO
+	constructElems() {
+		this.button = $("<button>")
+			.text(this.desc);
+	}
+
+	showLines() {
+		this.polylines.forEach(p => p.addTo(map));
+	}
+
+	hideLines() {
+		this.polylines.forEach(p => p.remove());
 	}
 }
-
-var allRoutes = {};
 
 function createRoutes(data) {
 	let routeNodes = data.routeStops.querySelectorAll("route");
 	for (let routeNode of routeNodes) {
 		let id = routeNode.getAttribute("id");
-		allRoutes[id] = new Route(id);
 
-		allRoutes[id].constructRouteStops(routeNode);
+		let route = new Route(id);
+		routesById[id] = route;
+		routesByOrder.push(route);
+
+		route.constructRouteStops(routeNode);
 	}
 
 	let placemarkNodes = data.routeCoords.querySelectorAll("Placemark");
@@ -78,22 +111,20 @@ function createRoutes(data) {
 		let id = placemarkNode.querySelector("[name='route_number'] > value").textContent;
 
 		// See createStops() for the reason behind this if statement.
-		if (id in allRoutes) {
-			allRoutes[id].constructMapData(placemarkNode);
+		if (id in routesById) {
+			routesById[id].constructMapData(placemarkNode);
 		}
 	}
 
-	for (let route of Object.values(allRoutes)) {
-		route.constructFinal();
+	for (let route of routesByOrder) {
+		route.constructElems();
 	}
-
-	console.log(allRoutes);
 }
 
 staticFetch.addData("routeCoords",
 	() => fetchXml("https://developer.trimet.org/gis/data/tm_routes.kml")
 );
-  
+
 staticFetch.onFetch(data => {
 	createRoutes(data);
 });
