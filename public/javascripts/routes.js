@@ -34,33 +34,34 @@ function mappingRoutes(xml){
 			//draw the line
         	//color code
 
+			//red
 			if(type == "MAX"){
-				var polyline = L.polyline(finalCoords, {color: '#E11845'}).addTo(map);
+				var polyline = L.polyline(finalCoords, {color: '#D81B60'}).addTo(map);
 			}
 
 			//blue
 			if(type == "BUS"){
-				var polyline = L.polyline(finalCoords, {color: '#0057E9'}).addTo(map);
-			}
-
-			//purple
-			if(type == "CR"){
-				var polyline = L.polyline(finalCoords, {color: '#8931EF'}).addTo(map);
+				var polyline = L.polyline(finalCoords, {color: '#1E88E5'}).addTo(map);
 			}
 
 			//yellow
-			if(type == "SC"){
-				var polyline = L.polyline(finalCoords, {color: '#F2CA19'}).addTo(map);
+			if(type == "CR"){
+				var polyline = L.polyline(finalCoords, {color: '#E0A905'}).addTo(map);
 			}
 
 			//green
-			if(type == "BSC"){
-				var polyline = L.polyline(finalCoords, {color: '#87E911'}).addTo(map);
+			if(type == "SC"){
+				var polyline = L.polyline(finalCoords, {color: '#00B307'}).addTo(map);
 			}
 
 			//pink
-			if(type == "AT"){
+			if(type == "BSC"){
 				var polyline = L.polyline(finalCoords, {color: '#FF00BD'}).addTo(map);
+			}
+
+			//gray
+			if(type == "AT"){
+				var polyline = L.polyline(finalCoords, {color: '#777777'}).addTo(map);
 			}
 
 		}

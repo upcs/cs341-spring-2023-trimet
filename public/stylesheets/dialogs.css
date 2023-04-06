@@ -170,3 +170,7 @@
 .message-buttons > button:active {
 	border-color: var(--header-active-bg);
 }
+
+#mapKey {
+	width: 100%;
+}

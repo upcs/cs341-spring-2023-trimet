@@ -69,8 +69,8 @@ function mappingStops(xml){
 		//red
 		if(type.textContent == "MAX"){
 			var circle = L.circle([myArray[1], myArray[0]], {
-				color: '#E11845',
-				fillColor: '#E11845',
+				color: '#D81B60',
+				fillColor: '#D81B60',
 				fillOpacity: 1,
 				radius: 5
 			}).addTo(map);
@@ -79,48 +79,48 @@ function mappingStops(xml){
 		//blue
 		if(type.textContent == "BUS"){
 			var circle = L.circle([myArray[1], myArray[0]], {
-				color: '#0057E9',
-				fillColor: '#0057E9',
-				fillOpacity: 1,
-				radius: 5
-			}).addTo(map);
-		}
-
-		//purple
-		if(type.textContent == "CR"){
-			var circle = L.circle([myArray[1], myArray[0]], {
-				color: '#8931EF',
-				fillColor: '#8931EF',
+				color: '#1E88E5',
+				fillColor: '#1E88E5',
 				fillOpacity: 1,
 				radius: 5
 			}).addTo(map);
 		}
 
 		//yellow
-		if(type.textContent == "SC"){
+		if(type.textContent == "CR"){
 			var circle = L.circle([myArray[1], myArray[0]], {
-				color: '#F2CA19',
-				fillColor: '#F2CA19',
+				color: '#E0A905',
+				fillColor: '#E0A905',
 				fillOpacity: 1,
 				radius: 5
 			}).addTo(map);
 		}
 
 		//green
-		if(type.textContent == "BSC"){
+		if(type.textContent == "SC"){
 			var circle = L.circle([myArray[1], myArray[0]], {
-				color: '#87E911',
-				fillColor: '#87E911',
+				color: '#00B307',
+				fillColor: '#00B307',
 				fillOpacity: 1,
 				radius: 5
 			}).addTo(map);
 		}
 
 		//pink
+		if(type.textContent == "BSC"){
+			var circle = L.circle([myArray[1], myArray[0]], {
+				color: '#FF00B0',
+				fillColor: '#FF00B0',
+				fillOpacity: 1,
+				radius: 5
+			}).addTo(map);
+		}
+
+		//gray
 		if(type.textContent == "AT"){
 			var circle = L.circle([myArray[1], myArray[0]], {
-				color: '#FF00BD',
-				fillColor: '#FF00BD',
+				color: '#777777',
+				fillColor: '#777777',
 				fillOpacity: 1,
 				radius: 5
 			}).addTo(map);
