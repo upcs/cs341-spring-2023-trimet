@@ -7,41 +7,34 @@ class Route {
 
 	constructRouteStops(routeNode) {
 		this.desc = routeNode.getAttribute("desc");
-		this.routeNum = routeNode.getAttribute("routeNum");
 		this.routeSubType = routeNode.getAttribute("routeSubType");
 
-		this.dirs = [[], []];
-		// TODO: Fill in dirs
+		this.stops = [[], []];
+
+		for (let dirNode of routeNode.children) {
+			let dir = dirNode.getAttribute("dir");
+			let stopList = this.stops[dir];
+
+			for (let stopNode of dirNode.children) {
+				let id = stopNode.getAttribute("locid");
+				let stop = allStops[id];
+
+				stopList.push(stop);
+				stop.addParentRoute(this);
+			}
+		}
 	}
 
 	constructMapData(placemarkNode) {
+		var coordList;
+		var coords;
+		var type;
+
 		this.lines = [];
-		// TODO
-	}
-
-	constructFinal() {
-		// TODO
-	}
-}
-
-var routes = {};
-
-function mappingRoutes(xml){
-	var placemarkList = xml.querySelectorAll("Placemark")
-
-	var placemark;
-	var coordList;
-	var coords;
-	var type;
-	
-
-	//iterate through each placemark
-	for (placemark of placemarkList) {
-		coordList = placemark.querySelectorAll("coordinates");
-		type = placemark.querySelector("[name='type'] > value");
 		
-		type = type.textContent
-		
+		coordList = placemarkNode.querySelectorAll("coordinates");
+		type = placemarkNode.querySelector("[name='type'] > value");
+				
 		//find coordinates
 		for(coords of coordList){
 			var finalCoords = [];
@@ -54,43 +47,47 @@ function mappingRoutes(xml){
 				const coordArray = myArray[i].split(",");
 				finalCoords.push([coordArray[1], coordArray[0]]);
 			}
-
-			//var polyline = L.polyline(finalCoords, {color: '#FF00BD'}).addTo(map);
 			
 			//draw the line
         	//color code
 
-			if(type == "MAX"){
-				var polyline = L.polyline(finalCoords, {color: '#E11845'}).addTo(map);
-			}
+			let color = markerColors[type.textContent];
 
-			//blue
-			if(type == "BUS"){
-				var polyline = L.polyline(finalCoords, {color: '#0057E9'}).addTo(map);
-			}
-
-			//purple
-			if(type == "CR"){
-				var polyline = L.polyline(finalCoords, {color: '#8931EF'}).addTo(map);
-			}
-
-			//yellow
-			if(type == "SC"){
-				var polyline = L.polyline(finalCoords, {color: '#F2CA19'}).addTo(map);
-			}
-
-			//green
-			if(type == "BSC"){
-				var polyline = L.polyline(finalCoords, {color: '#87E911'}).addTo(map);
-			}
-
-			//pink
-			if(type == "AT"){
-				var polyline = L.polyline(finalCoords, {color: '#FF00BD'}).addTo(map);
-			}
-
+			this.polyline = L.polyline(finalCoords, {color}).addTo(map);
 		}
 	}
+
+	constructFinal() {
+		// TODO
+	}
+}
+
+var allRoutes = {};
+
+function createRoutes(data) {
+	let routeNodes = data.routeStops.querySelectorAll("route");
+	for (let routeNode of routeNodes) {
+		let id = routeNode.getAttribute("id");
+		allRoutes[id] = new Route(id);
+
+		allRoutes[id].constructRouteStops(routeNode);
+	}
+
+	let placemarkNodes = data.routeCoords.querySelectorAll("Placemark");
+	for (let placemarkNode of placemarkNodes) {
+		let id = placemarkNode.querySelector("[name='route_number'] > value").textContent;
+
+		// See createStops() for the reason behind this if statement.
+		if (id in allRoutes) {
+			allRoutes[id].constructMapData(placemarkNode);
+		}
+	}
+
+	for (let route of Object.values(allRoutes)) {
+		route.constructFinal();
+	}
+
+	console.log(allRoutes);
 }
 
 staticFetch.addData("routeCoords",
@@ -98,5 +95,5 @@ staticFetch.addData("routeCoords",
 );
   
 staticFetch.onFetch(data => {
-	mappingRoutes(data.routeCoords);
+	createRoutes(data);
 });

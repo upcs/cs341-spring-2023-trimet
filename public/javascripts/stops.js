@@ -1,5 +1,14 @@
 "use strict";
 
+var markerColors = {
+	MAX: "#E11845",
+	BUS: "#0057E9",
+	CR: "#8931EF",
+	SC: "#F2CA19",
+	BSC: "#87E911",
+	AT: "#FF00BD",
+};
+
 class Stop {
 	constructor(id) {
 		this.id = id;
@@ -7,19 +16,79 @@ class Stop {
 
 	constructRouteStops(stopNode) {
 		this.desc = stopNode.getAttribute("desc");
+		this.routes = [];
 	}
 
 	constructMapData(placemarkNode) {
-		this.location = [];
-		// TODO
+		var coords;
+		var type;
+
+		coords = placemarkNode.getElementsByTagName("Point")[0];
+		coords = coords.getElementsByTagName("coordinates")[0];
+
+		//access the extended data to get the type of stop
+		type = placemarkNode.getElementsByTagName("ExtendedData")[0];
+		type = type.getElementsByTagName("Data")[4];
+		type = type.getElementsByTagName("value")[0];
+
+
+		//remove ending coords, break up long and lat
+		coords = coords.textContent.slice(0, -4);
+		const myArray = coords.split(",");
+		this.location = [myArray[1], myArray[0]];
+
+		let color = markerColors[type.textContent];
+
+		this.marker = L.circle(this.location, {
+			color: color,
+			fillColor: color,
+			fillOpacity: 1,
+			radius: 5
+		});
+
+		this.marker.addTo(map);
 	}
 
 	constructFinal() {
 		// TODO
 	}
+
+	addParentRoute(route) {
+		this.routes.push(route);
+	}
 }
 
-var stops = {};
+var allStops = {};
+
+function createStops(data) {
+	let stopNodes = data.routeStops.querySelectorAll("stop");
+	for (let stopNode of stopNodes) {
+		let id = stopNode.getAttribute("locid");
+		if (id in allStops) {
+			continue;
+		}
+
+		allStops[id] = new Stop(id);
+		allStops[id].constructRouteStops(stopNode);
+	}
+
+	let placemarkNodes = data.stopCoords.querySelectorAll("Placemark");
+	for (let placemarkNode of placemarkNodes) {
+		let id = placemarkNode.querySelector("[name='stop_id'] > value").textContent;
+
+		// This XML file has stops for the Aerial Tram, but the Routes/Stops
+		// file has no such stop. So, ignore any IDs to stops that don't exist.
+		if (id in allStops) {
+			allStops[id].constructMapData(placemarkNode);
+		}
+	}
+
+	for (let stop of Object.values(allStops)) {
+		stop.constructFinal();
+	}
+
+	console.log(allStops);
+}
 
 /**
  * A js file that interacts with the map to display icons at each coordinate
@@ -62,100 +131,10 @@ var stops = {};
 we just want coordinates for now
 */
 
-function mappingStops(xml){
-	var xmlDoc = xml.documentElement;
-	var stops = xmlDoc.getElementsByTagName("Placemark");
-
-	var coords;
-	var type;
-	var i = 0;
-	//we know how many stops there are
-	for (i = 0; i < stops.length; i++) {
-
-		coords = stops[i].getElementsByTagName("Point")[0];
-		coords = coords.getElementsByTagName("coordinates")[0];
-
-		//access the extended data to get the type of stop
-		type = stops[i].getElementsByTagName("ExtendedData")[0];
-		type = type.getElementsByTagName("Data")[4];
-		type = type.getElementsByTagName("value")[0];
-
-
-		//remove ending coords, break up long and lat
-		coords = coords.textContent.slice(0, -4);
-		const myArray = coords.split(",");
-	
-
-		//add coords to map
-
-		//red
-		if(type.textContent == "MAX"){
-			var circle = L.circle([myArray[1], myArray[0]], {
-				color: '#E11845',
-				fillColor: '#E11845',
-				fillOpacity: 1,
-				radius: 5
-			}).addTo(map);
-		}
-
-		//blue
-		if(type.textContent == "BUS"){
-			var circle = L.circle([myArray[1], myArray[0]], {
-				color: '#0057E9',
-				fillColor: '#0057E9',
-				fillOpacity: 1,
-				radius: 5
-			}).addTo(map);
-		}
-
-		//purple
-		if(type.textContent == "CR"){
-			var circle = L.circle([myArray[1], myArray[0]], {
-				color: '#8931EF',
-				fillColor: '#8931EF',
-				fillOpacity: 1,
-				radius: 5
-			}).addTo(map);
-		}
-
-		//yellow
-		if(type.textContent == "SC"){
-			var circle = L.circle([myArray[1], myArray[0]], {
-				color: '#F2CA19',
-				fillColor: '#F2CA19',
-				fillOpacity: 1,
-				radius: 5
-			}).addTo(map);
-		}
-
-		//green
-		if(type.textContent == "BSC"){
-			var circle = L.circle([myArray[1], myArray[0]], {
-				color: '#87E911',
-				fillColor: '#87E911',
-				fillOpacity: 1,
-				radius: 5
-			}).addTo(map);
-		}
-
-		//pink
-		if(type.textContent == "AT"){
-			var circle = L.circle([myArray[1], myArray[0]], {
-				color: '#FF00BD',
-				fillColor: '#FF00BD',
-				fillOpacity: 1,
-				radius: 5
-			}).addTo(map);
-		}
-
-	}
-
-}
-
 staticFetch.addData("stopCoords",
 	() => fetchXml("https://developer.trimet.org/gis/data/tm_stops.kml")
 );
   
 staticFetch.onFetch(data => {
-	mappingStops(data.stopCoords);
+	createStops(data);
 });
