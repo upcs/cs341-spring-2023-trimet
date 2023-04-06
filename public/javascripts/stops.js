@@ -40,19 +40,15 @@
 we just want coordinates for now
 */
 
-function mappingStops(){
-	fetchAppXml("https://developer.trimet.org/gis/data/tm_stops.kml", {ll: true},
-	function(xml) {
-
+function mappingStops(xml){
 	var xmlDoc = xml.documentElement;
 	var stops = xmlDoc.getElementsByTagName("Placemark");
-	//console.log("HERE! stops.js line 51");
 
 	var coords;
 	var type;
 	var i = 0;
 	//we know how many stops there are
-	for (i = 0; i < 6466; i++) {
+	for (i = 0; i < stops.length; i++) {
 
 		coords = stops[i].getElementsByTagName("Point")[0];
 		coords = coords.getElementsByTagName("coordinates")[0];
@@ -132,11 +128,12 @@ function mappingStops(){
 
 	}
 
-	},
-	function(status) {
-		console.log("mappingStops.js error: " + status);
-	});
-
 }
 
-mappingStops();
+staticFetch.addData("stopCoords",
+	() => fetchXml("https://developer.trimet.org/gis/data/tm_stops.kml")
+);
+  
+staticFetch.onFetch(data => {
+	mappingStops(data.stopCoords);
+});
