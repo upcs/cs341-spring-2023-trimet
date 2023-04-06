@@ -111,6 +111,7 @@ async function fetchData(url, dataType, retry = true) {
 function fetchPromise(url, dataType) {
 	return new Promise((resolve, reject) => {
 		$.ajax({
+    
 			// Provide the URL and data type verbatim. We also provide
 			// a timeout so the fetch doesn't try to resolve for
 			// inordinately long amounts of time.
