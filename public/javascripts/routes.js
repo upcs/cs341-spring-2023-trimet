@@ -1,5 +1,31 @@
 "use strict";
 
+class Route {
+	constructor(id) {
+		this.id = id;
+	}
+
+	constructRouteStops(routeNode) {
+		this.desc = routeNode.getAttribute("desc");
+		this.routeNum = routeNode.getAttribute("routeNum");
+		this.routeSubType = routeNode.getAttribute("routeSubType");
+
+		this.dirs = [[], []];
+		// TODO: Fill in dirs
+	}
+
+	constructMapData(placemarkNode) {
+		this.lines = [];
+		// TODO
+	}
+
+	constructFinal() {
+		// TODO
+	}
+}
+
+var routes = {};
+
 function mappingRoutes(xml){
 	var placemarkList = xml.querySelectorAll("Placemark")
 

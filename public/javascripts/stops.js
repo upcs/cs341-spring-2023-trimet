@@ -1,4 +1,26 @@
 "use strict";
+
+class Stop {
+	constructor(id) {
+		this.id = id;
+	}
+
+	constructRouteStops(stopNode) {
+		this.desc = stopNode.getAttribute("desc");
+	}
+
+	constructMapData(placemarkNode) {
+		this.location = [];
+		// TODO
+	}
+
+	constructFinal() {
+		// TODO
+	}
+}
+
+var stops = {};
+
 /**
  * A js file that interacts with the map to display icons at each coordinate
  * for a transit stop.
