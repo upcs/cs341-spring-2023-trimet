@@ -85,7 +85,7 @@ function mappingStops(xml){
 				radius: 5
 			}).addTo(map);
 		}
-
+    
 		//yellow
 		if(type.textContent == "CR"){
 			var circle = L.circle([myArray[1], myArray[0]], {
@@ -115,7 +115,7 @@ function mappingStops(xml){
 				radius: 5
 			}).addTo(map);
 		}
-
+    
 		//gray
 		if(type.textContent == "AT"){
 			var circle = L.circle([myArray[1], myArray[0]], {
