@@ -19,17 +19,17 @@ var stopsById = {}; //hash table by id
 var stopsByOrder = []; //ordered stops list
 
 //object to hold a single transit stop and its info instead
-//of parsing the XML everytime we need a stop
+//of parsing the XML everytime we need this stop
 class Stop {
 	//establishes the id, the most important detail
 	constructor(id) {
 		this.id = id;
 	}
 
-	//creates the name and coordinates and map marker
+	//creates the name, coordinates and map marker
 	constructRouteStops(stopNode) {
 		this.desc = stopNode.getAttribute("desc");
-		this.routes = [];
+		this.routes = [];//list of parent route references
 
 		this.coords = [
 			parseFloat(stopNode.getAttribute("lat")),
@@ -60,12 +60,12 @@ class Stop {
 		this.routes.push(route);
 	}
 
-	//visualize marker to map
+	//visualize stop marker on map
 	showMarker() {
 		this.marker.addTo(map);
 	}
 
-	//remove marker from map
+	//remove stop marker from map
 	hideMarker() {
 		this.marker.remove();
 	}
@@ -74,7 +74,7 @@ class Stop {
 //runs after XML files have been fetched
 //parses the XML files into stop objects
 function createStops(data) {
-	//loops thorugh routeStops XML file
+	//loops through routeStops XML file
 	let stopNodes = data.routeStops.querySelectorAll("stop");
 	for (let stopNode of stopNodes) {
 		let id = stopNode.getAttribute("locid");
@@ -85,9 +85,9 @@ function createStops(data) {
 
 		let stop = new Stop(id);
 		stopsById[id] = stop; //adds stop to hash table
-		stopsByOrder.push(stop); //adds stop to list
+		stopsByOrder.push(stop); //adds stop to ordered list
 
-		//creates name, coordinates, and marker
+		//creates the name, coordinates and map marker
 		stop.constructRouteStops(stopNode);
 	}
 
