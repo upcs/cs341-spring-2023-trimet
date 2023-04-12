@@ -42,6 +42,9 @@ function showAllRoutes() {
 }
 
 function showRoute(route) {
+	//Hides any lines already on the map in order to prevent multiple lines appearing at once.
+	hideAllLines();
+	
 	// Show the dirs page of the routes tab.
 	routePages.showTab("dirs");
 
@@ -102,6 +105,7 @@ function createRouteButtons() {
 				routeDir.buttons[i].on("click", e => {
 					sidebarTabs.showTab("stops");
 					showStop(routeDir.stops[i]);
+					hideAllLines();
 				});
 			}
 		}
