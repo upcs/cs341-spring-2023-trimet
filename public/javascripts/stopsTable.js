@@ -32,13 +32,19 @@ function updateStopSearch() {
 	}
 }
 
+/**
+ * Hides all stops on the map incase more than one are appearing at once.
+ */
 function hideAllStops() {
 	for (stop of stopsByOrder) {
 		stop.hideMarker();
 	}
 }
 
-function showAllStops() {
+/**
+ * Shows the stop page and removes any markers that are currently on the map for stops.
+ */
+function showStopPage() {
 	stopPages.showTab("stops");
 	hideAllStops();
 }
@@ -132,7 +138,7 @@ $("#stops-clear-search").on("click", e => {
 
 // Goes back to the list of stops found from the given search
 $("#transport-back").on("click", e => {
-	showAllStops();
+	showStopPage();
 });
 
 // After fetching data, calls stops in order to create a list of all possible stops.
