@@ -18,7 +18,7 @@ class RouteDir {
 			let stop = stopsById[id];
 
 			this.stops.push(stop);
-			stop.constructParentRoute(this);
+			stop.constructParentRoute(this.route);
 
 			let button = $("<button>")
 				.text(stop.desc);

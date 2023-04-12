@@ -104,6 +104,7 @@ function createRouteButtons() {
 			for (let i = 0; i < routeDir.stops.length; i++) {
 				// When a direction stop button is clicked, show the stop.
 				routeDir.buttons[i].on("click", e => {
+					sidebarTabs.showTab("stops");
 					showStop(routeDir.stops[i]);
 				});
 			}

@@ -8,101 +8,82 @@ var stopPages = new TabList("stops-pages", false)
 // Create a tab list for the routes associate with a given stop.
 var transportTabs = new TabList("transport-type");
 
-/**
- * Updates the list of routes that go through a given stop and creates/ shows the list
- * in a new tab list.
- *
- * @param stopNode The XML node from the stopTransports XML to be compared with 
- *                  XML nodes from transportRoutes in order to find routes that 
- * 					go through a given stop.
- */
-function updateTransport(stopNode) {
-	let xml = staticFetch.data.transportRoutes;
-
-	//Displays the tab with the lists of routes.
-	transportTabs.showTab("transport-0");
-
-	// Hides and empties lists for the time being
-	$("#transport-selector").hide().text("");
-	$("#transport-0-list").empty();
-
-	// Update the text for the stop we chose.
-	$("#transport-chosen").text(stopNode.getElementsByTagName("name")[0].textContent);
-
-	// Loop over the directions we have as children, which may be one or two.
-	for (let transportNode of xml.documentElement.children) {
-		for (let transportStop of transportNode.children) {
-			//Hides the top selector button as it is not necessary anymore.
-			$("#transport-selector").hide();
-
-			// Get the list used to store the routes
-			let transportElem = $("#transport-0-list").scrollTop(0);
-
-			// Looks at every stop in a given direction for a given route. 
-			// If the stop passed in (stopNode) is within a given route. Adds the
-			// route to the list with the given direction. 
-			for (let routeNode of transportStop.children) {
-				if ((routeNode.getAttribute("desc")) == (stopNode.getElementsByTagName("name")[0].textContent)) {
-					let buttonElem = $("<button>").text(transportNode.getAttribute("desc") 
-						+ " -- " + routeNode.getAttribute("dir"));	
-					transportElem.append(buttonElem);
-				}
-			}
-		}
-	}
-}
-
-/**
- * Updates which stop buttons are shown or hidden based on the current search
- * terms that are listed in the search bar.
+/** 
+ * Displays list of stop buttons based on a user inputed key word or stop 
+ * name. 
  */
 function updateStopSearch() {
-	let stopsElem = $("#stops-list");
-
 	// Get our search term with case insensitivity and ignoring leading or
 	// trailing whitespace.
 	let searchTerm = $("#stops-search").val().trim().toLowerCase();
 
-	// Loop over all the buttons in our stops and decide which ones to show
-	// and hide.
-	for (let buttonElem of stopsElem.children()) {
-		// Get the button stop name, also case insensitive.
-		buttonElem = $(buttonElem);
-		let stopName = buttonElem.text().toLowerCase();
+	// Loop over all of our stops and decide which buttons to show and hide.
+	for (let stop of stopsByOrder) {
+		// Get the stops description, also case insensitively.
+		let stopName = stop.desc.toLowerCase();
 
-		// If the button's stop name includes the search term, show this
-		// button in case it was hidden before. Otherwise, hide this button.
+		// If the description includes the search term, show this button in
+		// case it was hidden before. Otherwise, hide this button.
 		if (stopName.includes(searchTerm)) {
-			buttonElem.show();
+			stop.button.show();
 		} else {
-			buttonElem.hide();
+			stop.button.hide();
 		}
 	}
 }
 
-/**
- * Updates the list of stops displayed in the sidebar in accord with the
- * stopTransports XML file fetched from TriMet's servers and goes on to hide
- * all available stops until a search is entered.
+/** 
+ * Shows the routes that corespond with a provided stop within the stops tab
+ * before taking the user to the routes pages if a route is clicked.
  */
-function updateStops() {
-	let xml = staticFetch.data.stopTransports;
+function showStop(stop) {
+	// Show the transport page of the stops tab.
+	stopPages.showTab("transport");
 
-	// Get and clear out our current list of routes.
+	// Shows the specific transport tab being worked with.
+	transportTabs.showTab("transport-0");
+
+	// Hides the tab and empties content before working with it.
+	$("#transport-selector").hide().text("");
+	$("#transport-0-list").empty();
+
+	// Sets the name of the chosen transport (route).
+	$("#transport-chosen").text(stop.desc);
+
+	let routeElem = $("#transport-0-list").scrollTop(0);
+
+	// Adds all of the route buttons for a given stop to the list.
+	for (let button of stop.routeButtons) {
+		routeElem.append(button);
+	}
+}
+
+/**
+ * Creates the list of buttons for every stop. Also sets up
+ * interaction with one of the given route buttons if clicked.
+ */
+function createStopButtons() {
+	// Clears current list of stops if tab isn't empty.
 	let stopsElem = $("#stops-list").empty();
 
-	// Loop over all the stops of the root of the XML document and add
-	// buttons for each of them.
-	for (let stopNode of xml.documentElement.getElementsByTagName("Placemark")) {
-		let buttonElem = $("<button>")
-			.text(stopNode.getElementsByTagName("name")[0].textContent)
-			.on("click", e => {
-				// When the button is clicked, show the routes that go through that stop.
-				stopPages.showTab("transport");
-				updateTransport(stopNode);
-			});
+	// Loops through every stop and creates a clickable button that will
+	// bring up a tab that shows the routes for the given stop.
+	for (let stop of stopsByOrder) {
+		// When a stop button is clicked, show the stop.
+		stop.button.on("click", e => {
+			showStop(stop);
+		});
 
-		stopsElem.append(buttonElem);
+		// Add this stop's button to the sidebar.
+		stopsElem.append(stop.button);
+
+		// Loops through every route for a given stop and creates its button.
+		for (let i = 0; i < stop.routes.length; i++) {
+			stop.routeButtons[i].on("click", e => {
+				sidebarTabs.showTab("routes");
+				showRoute(stop.routes[i]);
+			});
+		}
 	}
 
 	//After creating all button elements, hides the list in order to prevent wait time issues.
@@ -137,28 +118,8 @@ $("#transport-back").on("click", e => {
 	stopPages.showTab("stops");
 });
 
-/* Fetches every possible route and the route's stops from TriMet and 
- * stores it within the "transportRoutes" variable in order to prevent 
- * fetching from happening everytime a search is made. 
- */
-staticFetch.addData("transportRoutes",
-	() => fetchAppXml("https://developer.trimet.org/ws/V1/routeConfig", {
-		stops: true,
-		dir: true,
-	})
-);
-
-/* Fetches every possible stop from TriMet and stores it within the "stopTransports" variable 
- * in order to prevent fetching from happening everytime a search is made. 
- */
-staticFetch.addData("stopTransports",
-	() => fetchAppXml("https://developer.trimet.org/gis/data/tm_stops.kml", {
-		ll: true,
-	})
-);
-
-
 // After fetching data, calls stops in order to create a list of all possible stops.
 staticFetch.onFetch(data => {
-	updateStops();
+	createStopButtons();
 });
+
