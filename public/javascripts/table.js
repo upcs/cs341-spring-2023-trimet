@@ -55,7 +55,7 @@ function showRoute(route) {
 	// It's possible for a route to only have one direction, so hide both tabs
 	// and empty their contents for now.
 	$("#dir-0-selector, #dir-1-selector").hide().text("");
-	$("#dir-0-list, #dir-1-list").empty();
+	$("#dir-0-list, #dir-1-list").children().detach();
 
 	// Update the text for the route we chose.
 	$("#dir-chosen").text(route.desc);
@@ -78,10 +78,6 @@ function showRoute(route) {
 			dirElem.append(button);
 		}
 	}
-}
-
-function showStop(stop) {
-	console.log("Stop clicked: " + stop.id);
 }
 
 function createRouteButtons() {

@@ -45,7 +45,7 @@ function showStop(stop) {
 
 	// Hides the tab and empties content before working with it.
 	$("#transport-selector").hide().text("");
-	$("#transport-0-list").empty();
+	$("#transport-0-list").children().detach();
 
 	// Sets the name of the chosen transport (route).
 	$("#transport-chosen").text(stop.desc);
