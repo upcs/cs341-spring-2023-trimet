@@ -122,4 +122,3 @@ $("#transport-back").on("click", e => {
 staticFetch.onFetch(data => {
 	createStopButtons();
 });
-
