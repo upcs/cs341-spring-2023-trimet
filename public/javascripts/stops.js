@@ -21,6 +21,7 @@ class Stop {
 	constructRouteStops(stopNode) {
 		this.desc = stopNode.getAttribute("desc");
 		this.routes = [];
+		this.routeButtons = [];
 
 		this.coords = [
 			parseFloat(stopNode.getAttribute("lat")),
@@ -45,8 +46,17 @@ class Stop {
 		});
 	}
 
+	constructElems() {
+		this.button = $("<button>")
+			.text(this.desc);
+	}
+
 	constructParentRoute(route) {
 		this.routes.push(route);
+
+		let routeButton = $("<button>")
+			.text(route.desc);
+		this.routeButtons.push(routeButton);
 	}
 
 	showMarker() {
@@ -82,6 +92,10 @@ function createStops(data) {
 		if (id in stopsById) {
 			stopsById[id].constructMapData(placemarkNode);
 		}
+	}
+
+	for (let stop of stopsByOrder) {
+		stop.constructElems();
 	}
 }
 

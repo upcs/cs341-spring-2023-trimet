@@ -34,6 +34,7 @@
 		<!-- Finally, load the files that handle the DOM. -->
 		<script defer src="/javascripts/interaction.js"></script>
 		<script defer src="/javascripts/table.js"></script>
+		<script defer src="/javascripts/stopsTable.js"></script>
 		<script defer src="/javascripts/alerts.js"></script>
 	</head>
 	<body>
@@ -46,7 +47,7 @@
 			<div id="selector-bg"></div>
 			<nav id="selector" data-tablist="sidebar">
 				<button class="special">Tracker</button>
-				<button class="special">Stops</button>
+				<button class="special" data-tab="stops">Stops</button>
 				<button class="special" data-tab="routes">Routes</button>
 			</nav>
 
@@ -93,6 +94,35 @@
 						<div id="dir-lists" data-tablist="routes-dir">
 							<div id="dir-0-list" data-tab="dir-0"></div>
 							<div id="dir-1-list" data-tab="dir-1"></div>
+						</div>
+					</div>
+				</div>
+
+				<!-- Stops sidebar; contains subpages for stops and the routes that 
+					stop at a given stop. -->
+				<div id="stops-sidebar" data-tab="stops" data-tablist="stops-pages">
+					<!-- Stops subpage for showing the list of stops. -->
+					<div data-tab="stops">
+						<div id="stops-header">
+							<input id="stops-search" type="search" placeholder="Search for stop (hit enter to search)" />
+							<button id="stops-clear-search" class="special light-button">&#xD7;</button>
+						</div>
+						<div id="stops-list">
+							<div class="loading">Loading stops...</div>
+						</div>
+					</div>
+
+					<!-- Stops subpage for showing the list of routes/transport types for a given stop. -->
+					<div data-tab="transport">
+						<div id="transport-header">
+							<button id="transport-back" class="special light-button">&#x2190;</button>
+							<div id="transport-chosen"></div>
+						</div>
+						<div class="selector" data-tablist="transport-type">
+							<button id="transport-selector" class="special" data-tab="transport-0"></button>
+						</div>
+						<div id="transport-lists" data-tablist="transport-type">
+							<div id="transport-0-list" data-tab="transport-0"></div>
 						</div>
 					</div>
 				</div>
