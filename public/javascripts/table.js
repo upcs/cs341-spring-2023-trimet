@@ -106,6 +106,7 @@ function createRouteButtons() {
 					sidebarTabs.showTab("stops");
 					showStop(routeDir.stops[i]);
 					hideAllLines();
+					routeDir.stops[i].showMarker();
 				});
 			}
 		}
