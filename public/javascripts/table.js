@@ -42,6 +42,9 @@ function showAllRoutes() {
 }
 
 function showRoute(route) {
+	// Hides any lines currently on the map
+	hideAllLines();
+
 	// Show the dirs page of the routes tab.
 	routePages.showTab("dirs");
 
@@ -102,6 +105,10 @@ function createRouteButtons() {
 				routeDir.buttons[i].on("click", e => {
 					sidebarTabs.showTab("stops");
 					showStop(routeDir.stops[i]);
+
+					// Hides given line as well as shows stop clicked on.
+					hideAllLines();
+					routeDir.stops[i].showMarker();
 				});
 			}
 		}
