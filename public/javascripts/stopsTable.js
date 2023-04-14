@@ -5,6 +5,8 @@
 var stopPages = new TabList("stops-pages", false)
 	.showTab("stops");
 
+var transportTabs = new TabList("stops-transport");
+
 // Hide special elements in the stops list initially.
 $("#stops-search-message").hide();
 
@@ -88,11 +90,13 @@ function showStop(stop) {
 	stop.showMarker();
 
 	// Empty the content of the list before working with it.
-	let transportElem = $("#transport-list");
+	let transportElem = $("#transport-1-list");
 	transportElem.children().detach();
 
 	// Sets the name of the chosen transport (route).
 	$("#transport-chosen").text(stop.desc);
+
+	$("#transport-1-selector").text("Routes");
 
 	// Adds all of the route buttons for a given stop to the list.
 	for (let button of stop.routeButtons) {
