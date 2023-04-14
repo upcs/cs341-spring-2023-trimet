@@ -1,9 +1,12 @@
 :root {
+	--font-size: 16px;
+
 	--link-fg: #1b9891;
 	--link-active-fg: #0f5753;
 
 	--button-bg: white;
 	--button-fg: black;
+	--button-light-fg: gray;
 	--button-border: lightgray;
 
 	--button-hover-bg: #bef4f1;
@@ -14,6 +17,7 @@
 
 	--input-bg: white;
 	--input-fg: black;
+	--input-light-fg: gray;
 	--input-border: lightgray;
 
 	--input-hover-border: #1fada6;
@@ -21,6 +25,7 @@
 
 	--primary-bg: whitesmoke;
 	--primary-fg: black;
+	--primary-light-fg: #606060;
 	--primary-border: lightgray;
 
 	--accent-bg: gainsboro;

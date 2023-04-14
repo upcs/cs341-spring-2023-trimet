@@ -50,6 +50,8 @@ class Route {
 
 		this.lines = [];
 		this.polylines = [];
+
+		this.pinned = false;
 	}
 
 	constructMapData(placemarkNode) {
@@ -91,6 +93,24 @@ class Route {
 
 	hideLines() {
 		this.polylines.forEach(p => p.remove());
+	}
+
+	pin() {
+		this.pinned = true;
+		this.button.attr("data-pin", true);
+	}
+
+	unpin() {
+		this.pinned = false;
+		this.button.removeAttr("data-pin");
+	}
+
+	togglePin() {
+		if (this.pinned) {
+			this.unpin();
+		} else {
+			this.pin();
+		}
 	}
 }
 
