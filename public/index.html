@@ -34,20 +34,21 @@
 		<!-- Finally, load the files that handle the DOM. -->
 		<script defer src="/javascripts/interaction.js"></script>
 		<script defer src="/javascripts/table.js"></script>
+		<script defer src="/javascripts/stopsTable.js"></script>
 		<script defer src="/javascripts/alerts.js"></script>
 	</head>
 	<body>
 		<!-- The whole main element of the page is a grid. Special content,
 			like dialogs, and hidden content are stored outside of the main
-			grid.  -->
+			grid. -->
 		<main>
 			<!-- Sidebar selector containing buttons for choosing what to
 				display in the sidebar, controlled by a TabList. -->
 			<div id="selector-bg"></div>
 			<nav id="selector" data-tablist="sidebar">
 				<button class="special">Tracker</button>
-				<button class="special">Stops</button>
 				<button class="special" data-tab="routes">Routes</button>
+				<button class="special" data-tab="stops">Stops</button>
 			</nav>
 
 			<!-- Top bar containing the title of the application and buttons
@@ -64,36 +65,74 @@
 
 			<!-- The sidebar; this is controlled by the same TabList as the
 				sidebar selector. -->
-			<div id="sidebar" data-tablist="sidebar">
+			<div id="sidebar" class="tab-box" data-tablist="sidebar">
 				<!-- Routes sidebar; contains subpages for routes and stops for
 					each route in both directions. -->
-				<div id="routes-sidebar" data-tab="routes" data-tablist="routes-pages">
+				<div id="routes-sidebar" class="full-column tab-box"
+						data-tab="routes" data-tablist="routes-pages">
 					<!-- Routes subpage for showing the list of routes. -->
-					<div data-tab="routes">
+					<div class="full-column" data-tab="routes">
 						<div id="routes-header">
-							<input id="routes-search" type="search" placeholder="Search for route" />
-							<button id="routes-clear-search" class="special light-button">&#xD7;</button>
+							<input type="search" id="routes-search"
+								placeholder="Search for route" />
+							<input type="button" id="routes-clear-search" value="&#xD7;" />
 						</div>
-						<div id="routes-list">
-							<div class="loading">Loading routes...</div>
+						<div id="routes-list" class="item-list">
+							<div id="routes-loading" class="loading">Loading routes...</div>
+							<div id="routes-search-message">No results found</div>
+							<div id="routes-pin-sep"></div>
 						</div>
 					</div>
 
 					<!-- Routes subpage for showing the list of stops in a
 						route in both directions. -->
-					<div data-tab="dirs">
+					<div class="full-column" data-tab="dirs">
 						<div id="dir-header">
-							<button id="dir-back" class="special light-button">&#x2190;</button>
+							<div id="dir-control">
+								<input type="button" id="dir-back" value="&#x2190;" />
+								<div class="flex-grow"></div>
+								<input type="button" id="dir-pin" value="" />
+							</div>
 							<div id="dir-chosen"></div>
 						</div>
 						<div class="selector" data-tablist="routes-dir">
 							<button id="dir-0-selector" class="special" data-tab="dir-0"></button>
 							<button id="dir-1-selector" class="special" data-tab="dir-1"></button>
 						</div>
-						<div id="dir-lists" data-tablist="routes-dir">
-							<div id="dir-0-list" data-tab="dir-0"></div>
-							<div id="dir-1-list" data-tab="dir-1"></div>
+						<div id="dir-lists" class="column-list tab-box" data-tablist="routes-dir">
+							<div id="dir-0-list" class="item-list" data-tab="dir-0"></div>
+							<div id="dir-1-list" class="item-list" data-tab="dir-1"></div>
 						</div>
+					</div>
+				</div>
+
+				<!-- Stops sidebar; contains subpages for stops and the routes
+					that stop at a given stop. -->
+				<div id="stops-sidebar" class="full-column tab-box"
+						data-tab="stops" data-tablist="stops-pages">
+					<!-- Stops subpage for showing the list of stops. -->
+					<div class="full-column" data-tab="stops">
+						<div id="stops-header">
+							<input type="search" id="stops-search"
+								placeholder="Search for stop" />
+							<input type="button" id="stops-clear-search" value="&#xD7;" />
+						</div>
+						<div id="stops-list" class="item-list">
+							<div id="stops-loading" class="loading">Loading stops...</div>
+							<div id="stops-search-message"></div>
+						</div>
+					</div>
+
+					<!-- Stops subpage for showing the list of routes/transport
+						types for a given stop. -->
+					<div class="full-column" data-tab="transport">
+						<div id="transport-header">
+							<div id="transport-control">
+								<input type="button" id="transport-back" value="&#x2190;" />
+							</div>
+							<div id="transport-chosen"></div>
+						</div>
+						<div id="transport-list" class="item-list"></div>
 					</div>
 				</div>
 			</div>

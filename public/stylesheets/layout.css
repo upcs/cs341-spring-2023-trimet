@@ -1,3 +1,18 @@
+html, body {
+	margin: 0;
+	padding: 0;
+
+	height: 100%;
+}
+
+main {
+	display: grid;
+	grid-template-columns: 400px 1fr;
+	grid-template-rows: min-content minmax(0, 1fr);
+
+	height: 100%;
+}
+
 #header-bg {
 	grid-area: 1 / 2 / 2 / 3;
 	background-color: var(--header-border);
@@ -81,4 +96,8 @@
 #selector > button[data-shown],
 #selector > button:active {
 	border-color: var(--selector-active-border);
+}
+
+#map {
+	grid-area: 2 / 2 / 3 / 3;
 }

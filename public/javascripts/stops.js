@@ -29,7 +29,10 @@ class Stop {
 	//creates the name, coordinates and map marker
 	constructRouteStops(stopNode) {
 		this.desc = stopNode.getAttribute("desc");
-		this.routes = [];//list of parent route references
+		this.routes = []; //list of parent route references
+    
+    //list of buttons for the routes that go through a given stop
+    this.routeButtons = [];
 
 		this.coords = [
 			parseFloat(stopNode.getAttribute("lat")),
@@ -55,9 +58,18 @@ class Stop {
 		});
 	}
 
-	//parent reference to all routes this stop is on
+	constructElems() {
+		this.button = $("<button>")
+			.text(this.desc);
+	}
+  
+  //parent reference to all routes this stop is on
 	constructParentRoute(route) {
 		this.routes.push(route);
+
+		let routeButton = $("<button>")
+			.text(route.desc);
+		this.routeButtons.push(routeButton);
 	}
 
 	//visualize stop marker on map
@@ -101,6 +113,10 @@ function createStops(data) {
 		if (id in stopsById) {
 			stopsById[id].constructMapData(placemarkNode);
 		}
+	}
+
+	for (let stop of stopsByOrder) {
+		stop.constructElems();
 	}
 }
 

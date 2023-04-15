@@ -1,5 +1,5 @@
 /* Styles each of the relevent tabs on the sidebar. */
-@import "routes.css";
+@import "routeStops.css";
 
 #sidebar {
 	grid-area: 2 / 1 / 3 / 2;
@@ -9,6 +9,26 @@
 	color: var(--primary-fg);
 }
 
-#sidebar > :not([data-shown]) {
-	display: none;
+.full-column {
+	display: flex;
+	flex-direction: column;
+
+	height: 100%;
+}
+
+.column-list,
+.item-list {
+	display: flex;
+	flex-direction: column;
+
+	overflow-y: auto;
+}
+
+.item-list {
+	gap: 4px;
+	padding: 4px 7px;
+}
+
+.item-list > button {
+	text-align: left;
 }

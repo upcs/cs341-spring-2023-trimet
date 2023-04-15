@@ -23,7 +23,7 @@ class RouteDir {
 
 			this.stops.push(stop);//add stop to list
 			//establishes parent route reference
-			stop.constructParentRoute(this);
+			stop.constructParentRoute(this.route);
 
 			//creates a button for the stop
 			let button = $("<button>")
@@ -64,6 +64,8 @@ class Route {
 		//so we have a empty list instead of undefined 
 		this.lines = [];//list of all coordinate nodes
 		this.polylines = [];//list of leaflet map layers
+    
+    this.pinned = false;
 	}
 
 	//adds the routes onto the map
@@ -112,6 +114,24 @@ class Route {
 	//remove route from map
 	hideLines() {
 		this.polylines.forEach(p => p.remove());
+	}
+
+	pin() {
+		this.pinned = true;
+		this.button.attr("data-pin", true);
+	}
+
+	unpin() {
+		this.pinned = false;
+		this.button.removeAttr("data-pin");
+	}
+
+	togglePin() {
+		if (this.pinned) {
+			this.unpin();
+		} else {
+			this.pin();
+		}
 	}
 }
 

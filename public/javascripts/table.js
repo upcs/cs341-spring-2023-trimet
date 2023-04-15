@@ -8,10 +8,16 @@ var routePages = new TabList("routes-pages", false)
 // Create a tab list for the inbound and outbound direction tabs.
 var dirsTabs = new TabList("routes-dir");
 
+// Hide special elements in the routes list initially.
+$("#routes-search-message").hide();
+
 function updateRouteSearch() {
 	// Get our search term with case insensitivity and ignoring leading or
 	// trailing whitespace.
 	let searchTerm = $("#routes-search").val().trim().toLowerCase();
+
+	// Assume we didn't find any elements initially.
+	let found = false;
 
 	// Loop over all of our routes and decide which buttons to show and hide.
 	for (let route of routesByOrder) {
@@ -22,10 +28,14 @@ function updateRouteSearch() {
 		// case it was hidden before. Otherwise, hide this button.
 		if (routeName.includes(searchTerm)) {
 			route.button.show();
+			found = true;
 		} else {
 			route.button.hide();
 		}
 	}
+
+	// Show the message for no matches based on whether we found any or not.
+	$("#routes-search-message").toggle(!found);
 }
 
 function hideAllLines() {
@@ -41,7 +51,30 @@ function showAllRoutes() {
 	hideAllLines();
 }
 
+function updatePinButton(route) {
+	let pinButton = $("#dir-pin");
+
+	// Update the text on the button to reflect the operation it will perform.
+	if (route.pinned) {
+		pinButton.val("Unpin");
+	} else {
+		pinButton.val("Pin");
+	}
+
+	// Remove the current event listener so we don't register more than one and
+	// replace it with one that toggles the pin of the route and re-updates the
+	// pin button.
+	pinButton.off("click");
+	pinButton.on("click", e => {
+		route.togglePin();
+		updatePinButton(route);
+	});
+}
+
 function showRoute(route) {
+	// Hides any lines currently on the map
+	hideAllLines();
+
 	// Show the dirs page of the routes tab.
 	routePages.showTab("dirs");
 
@@ -55,7 +88,9 @@ function showRoute(route) {
 	// It's possible for a route to only have one direction, so hide both tabs
 	// and empty their contents for now.
 	$("#dir-0-selector, #dir-1-selector").hide().text("");
-	$("#dir-0-list, #dir-1-list").empty();
+	$("#dir-0-list, #dir-1-list").children().detach();
+
+	updatePinButton(route);
 
 	// Update the text for the route we chose.
 	$("#dir-chosen").text(route.desc);
@@ -80,13 +115,12 @@ function showRoute(route) {
 	}
 }
 
-function showStop(stop) {
-	console.log("Stop clicked: " + stop.id);
-}
-
 function createRouteButtons() {
-	// Get and clear out our current list of routes.
-	let routesElem = $("#routes-list").empty();
+	// Remove our loading bar.
+	$("#routes-loading").remove();
+
+	// Get the container for the route buttons.
+	let routesElem = $("#routes-list");
 
 	// Loop through all the routes and their directions in order to add their
 	// buttons and bind event listeners.
@@ -104,11 +138,20 @@ function createRouteButtons() {
 			for (let i = 0; i < routeDir.stops.length; i++) {
 				// When a direction stop button is clicked, show the stop.
 				routeDir.buttons[i].on("click", e => {
+					sidebarTabs.showTab("stops");
 					showStop(routeDir.stops[i]);
+
+					// Hides given line as well as shows stop clicked on.
+					hideAllLines();
+					routeDir.stops[i].showMarker();
 				});
 			}
 		}
 	}
+
+	// Move the routes element to the end of the list of buttons; this allows
+	// CSS sibling selectors to make it automatically appear and disappear.
+	routesElem.append($("#routes-pin-sep"));
 
 	// Since the list of buttons was changed, also re-update which ones are
 	// shown due to the search bar.
