@@ -37,23 +37,6 @@ class Stop {
 			fillColor: markerColors.unknown,
 			fillOpacity: 1,
 		});
-
-		this.marker.on("click", e => {
-			for (let route of routesByOrder) {
-				route.selected = false;
-
-				route.updateShown();
-			}
-
-			// Hides any shown lines and any extra stops on the line. Also opens
-			// the sidebar tab for the clicked on stop
-			updateShownLines();
-			sidebarTabs.showTab("stops");
-			showStop(this);
-
-			//Centers the map on a given stop based on marker clicked
-			centerOnMarker(this.marker);
-		});
 	}
 
 	constructMapData(placemarkNode) {

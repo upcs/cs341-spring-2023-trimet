@@ -84,13 +84,18 @@ function showStopPage() {
  * before taking the user to the routes pages if a route is clicked.
  */
 function showStop(stop) {
+	// Removes all currently selected stops.
+	for (let stops of stopsByOrder) {
+		stops.selected = false;
+	}
+
 	stop.selected = true;
 
 	// Show the transport page of the stops tab.
 	stopPages.showTab("transport");
 
 	// Shows given stop on the map and centers map on it.
-	updateShownLines();
+	updateShownStops();
 	centerOnMarker(stop.marker);
 
 	// Empty the content of the list before working with it.
@@ -140,6 +145,23 @@ function createStopButtons() {
 				updateShownStops();
 			});
 		}
+
+		stop.marker.on("click", e => {
+			for (let route of routesByOrder) {
+				route.selected = false;
+
+				route.updateShown();
+			}
+
+			// Hides any shown lines and any extra stops on the line. Also opens
+			// the sidebar tab for the clicked on stop
+			updateShownLines();
+			sidebarTabs.showTab("stops");
+			showStop(stop);
+
+			//Centers the map on a given stop based on marker clicked
+			centerOnMarker(stop.marker);
+		});
 	}
 
 	// Since the list of buttons was changed, also re-update which ones are

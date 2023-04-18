@@ -76,6 +76,11 @@ function updatePinButton(route) {
 }
 
 function showRoute(route) {
+	// Gets rid of all currently selected routes.
+	for (let routes of routesByOrder) {
+		routes.selected = false; 
+	}
+
 	route.selected = true;
 
 	// Show the dirs page of the routes tab.

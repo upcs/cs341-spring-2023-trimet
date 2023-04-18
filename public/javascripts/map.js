@@ -42,7 +42,7 @@ function checkSelectedVsZoom() {
 
 	//Checks if there is currently displayed route or stop. If so then it does not
 	//display stops besides the selected one.
-	if (stopSelected == true || routeSelected == true) {
+	if (stopSelected || routeSelected) {
 		for (let stop of stopsByOrder) {
 			stop.zoomShown = false;
 
@@ -54,15 +54,9 @@ function checkSelectedVsZoom() {
 			for (let stop of stopsByOrder) {
 				var LatLng = stop.marker.getLatLng();
 
-				
 				// Checks to see if the stop is within the current maps bounds
 				// and displays the marker if it is.
-				if (map.getBounds().contains(LatLng)) {
-					stop.zoomShown = true;
-				}
-				else {
-					stop.zoomShown = false;
-				}
+				stop.zoomShown = map.getBounds().contains(LatLng);
 
 				stop.updateShown();
 			}
