@@ -36,7 +36,7 @@ class Route {
 		this.desc = routeNode.getAttribute("desc");
 		this.routeSubType = routeNode.getAttribute("routeSubType");
 
-		this.dirs = {};
+		this.dirs = [];
 		this.stops = [];
 
 		for (let dirNode of routeNode.children) {
@@ -52,6 +52,7 @@ class Route {
 		this.polylines = [];
 
 		this.pinned = false;
+		this.selected = false;
 	}
 
 	constructMapData(placemarkNode) {
@@ -87,12 +88,22 @@ class Route {
 			.text(this.desc);
 	}
 
-	showLines() {
-		this.polylines.forEach(p => p.addTo(map));
+	isShown() {
+		return this.selected || this.pinned;
 	}
 
-	hideLines() {
-		this.polylines.forEach(p => p.remove());
+	updateShown() {
+		if (this.isShown()) {
+			this.polylines.forEach(p => p.addTo(map));
+		} else {
+			this.polylines.forEach(p => p.remove());
+		}
+
+		for (let dir of this.dirs) {
+			for (let stop of dir.stops) {
+				stop.updateShown();
+			}
+		}
 	}
 
 	pin() {

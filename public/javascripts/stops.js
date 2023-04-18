@@ -27,12 +27,32 @@ class Stop {
 			parseFloat(stopNode.getAttribute("lat")),
 			parseFloat(stopNode.getAttribute("lng"))
 		];
+		
+		this.selected = false;
+		this.zoomShown = false;
 
 		this.marker = L.circle(this.coords, {
 			radius: 5,
 			color: markerColors.unknown,
 			fillColor: markerColors.unknown,
 			fillOpacity: 1,
+		});
+
+		this.marker.on("click", e => {
+			for (let route of routesByOrder) {
+				route.selected = false;
+
+				route.updateShown();
+			}
+
+			// Hides any shown lines and any extra stops on the line. Also opens
+			// the sidebar tab for the clicked on stop
+			updateShownLines();
+			sidebarTabs.showTab("stops");
+			showStop(this);
+
+			//Centers the map on a given stop based on marker clicked
+			centerOnMarker(this.marker);
 		});
 	}
 
@@ -59,12 +79,23 @@ class Stop {
 		this.routeButtons.push(routeButton);
 	}
 
-	showMarker() {
-		this.marker.addTo(map);
+	isShown() {
+		let shown = this.selected || this.zoomShown;
+		for (let route of this.routes) {
+			if (route.isShown()) {
+				shown = true
+			}
+		}
+
+		return shown;
 	}
 
-	hideMarker() {
-		this.marker.remove();
+	updateShown() {
+		if (this.isShown()) {
+			this.marker.addTo(map);
+		} else {
+			this.marker.remove();
+		}
 	}
 }
 

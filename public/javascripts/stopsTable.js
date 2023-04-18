@@ -59,9 +59,9 @@ function updateStopSearch() {
 /**
  * Hides all stops on the map in case more than one are displayed at once.
  */
-function hideAllStops() {
+function updateShownStops() {
 	for (stop of stopsByOrder) {
-		stop.hideMarker();
+		stop.updateShown();
 	}
 }
 
@@ -71,7 +71,12 @@ function hideAllStops() {
  */
 function showStopPage() {
 	stopPages.showTab("stops");
-	hideAllStops();
+
+	for (let stop of stopsByOrder) {
+		stop.selected = false;
+	}
+
+	updateShownStops();
 }
 
 /**
@@ -79,13 +84,14 @@ function showStopPage() {
  * before taking the user to the routes pages if a route is clicked.
  */
 function showStop(stop) {
-	hideAllLines();
+	stop.selected = true;
 
 	// Show the transport page of the stops tab.
 	stopPages.showTab("transport");
 
-	// Shows given stop on the map
-	stop.showMarker();
+	// Shows given stop on the map and centers map on it.
+	updateShownLines();
+	centerOnMarker(stop.marker);
 
 	// Empty the content of the list before working with it.
 	let transportElem = $("#transport-list");
@@ -98,6 +104,7 @@ function showStop(stop) {
 	for (let button of stop.routeButtons) {
 		transportElem.append(button);
 	}
+
 }
 
 /**
@@ -125,8 +132,12 @@ function createStopButtons() {
 		// Loops through every route for a given stop and creates its button.
 		for (let i = 0; i < stop.routes.length; i++) {
 			stop.routeButtons[i].on("click", e => {
+				stop.selected = false;
+
 				sidebarTabs.showTab("routes");
 				showRoute(stop.routes[i]);
+
+				updateShownStops();
 			});
 		}
 	}
@@ -151,6 +162,7 @@ $("#stops-clear-search").on("click", e => {
 // Goes back to the list of stops found from the given search
 $("#transport-back").on("click", e => {
 	showStopPage();
+	checkSelectedVsZoom();
 });
 
 // After fetching data, calls stops in order to create a list of all possible
