@@ -1,0 +1,72 @@
+#routes-header,
+#stops-header {
+	display: flex;
+	align-items: center;
+	gap: 5px;
+
+	padding: 5px 25px;
+	border-bottom: 2px solid var(--primary-border);
+}
+
+#routes-search,
+#stops-search {
+	flex-grow: 1;
+}
+
+#routes-list > button[data-pin] {
+	order: 1;
+}
+
+#routes-list > button[data-pin]::after {
+	content: "\1F4CC";
+
+	float: right;
+
+	color: transparent;
+	text-shadow: 0 0 var(--button-light-fg);
+}
+
+#routes-pin-sep {
+	display: none;
+	order: 2;
+
+	border-top: 2px dashed var(--primary-border);
+	margin: 5px 0;
+}
+
+#routes-list > button[data-pin] ~ #routes-pin-sep {
+	display: block;
+}
+
+#routes-search-message,
+#stops-search-message {
+	order: 3;
+
+	text-align: center;
+	color: var(--primary-light-fg);
+}
+
+#routes-list > button,
+#stops-list > button {
+	order: 4;
+}
+
+#dir-header,
+#transport-header {
+	display: flex;
+	flex-direction: column;
+	gap: 5px;
+
+	padding: 5px;
+}
+
+#dir-control,
+#transport-control {
+	display: flex;
+	gap: 5px;
+}
+
+#dir-chosen,
+#transport-chosen {
+	text-align: center;
+}
