@@ -59,21 +59,17 @@ function updateStopSearch() {
 }
 
 /**
- * Hides all stops on the map in case more than one are displayed at once.
- */
-function hideAllStops() {
-	for (stop of stopsByOrder) {
-		stop.hideMarker();
-	}
-}
-
-/**
  * Shows the stop page and removes any markers that are currently on the map
  * for stops.
  */
 function showStopPage() {
 	stopPages.showTab("stops");
-	hideAllStops();
+
+	for (let stop of stopsByOrder) {
+		stop.selected = false;
+	}
+
+	checkSelectedVsZoom();
 }
 
 /**
@@ -81,15 +77,20 @@ function showStopPage() {
  * before taking the user to the routes pages if a route is clicked.
  */
 function showStop(stop) {
-	
-	hideAllLines();
+	// Removes all currently selected stops.
+	for (let stops of stopsByOrder) {
+		stops.selected = false;
+	}
+
+	stop.selected = true;
 
 	// Show the transport page of the stops tab.
 	stopPages.showTab("transport");
 	transportTabs.showTab("time");
 
-	// Shows given stop on the map
-	stop.showMarker();
+	// Shows given stop on the map and centers map on it.
+	checkSelectedVsZoom();
+	centerOnMarker(stop.marker);
 
 	// Empty the content of the list before working with it.
 	let transportElem = $("#transport-list");
@@ -104,6 +105,7 @@ function showStop(stop) {
 	for (let button of stop.routeButtons) {
 		transportElem.append(button);
 	}
+  
 	//Calls function that populates the "Arrival Times" tab for a given stop.
 	addArrivalTimes(stop);
 }
@@ -132,11 +134,31 @@ function createStopButtons() {
 		// Loops through every route for a given stop and creates its button.
 		for (let i = 0; i < stop.routes.length; i++) {
 			stop.routeButtons[i].on("click", e => {
+				stop.selected = false;
+
 				sidebarTabs.showTab("routes");
 				showRoute(stop.routes[i]);
+
+				checkSelectedVsZoom();
 			});
 		}
 
+		stop.marker.on("click", e => {
+			for (let route of routesByOrder) {
+				route.selected = false;
+
+				route.updateShown();
+			}
+
+			// Hides any shown lines and any extra stops on the line. Also opens
+			// the sidebar tab for the clicked on stop
+			updateShownLines();
+			sidebarTabs.showTab("stops");
+			showStop(stop);
+
+			//Centers the map on a given stop based on marker clicked
+			centerOnMarker(stop.marker);
+		});
 	}
 
 	// Since the list of buttons was changed, also re-update which ones are
@@ -269,6 +291,7 @@ $("#stops-clear-search").on("click", e => {
 // Goes back to the list of stops found from the given search
 $("#transport-back").on("click", e => {
 	showStopPage();
+	checkSelectedVsZoom();
 });
 
 // After fetching data, calls stops in order to create a list of all possible
