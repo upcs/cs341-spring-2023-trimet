@@ -97,7 +97,8 @@ function showAlertsDialog(json) {
 		var unix = alerts[i].begin;
 		//unix conversion from shomrat/pitust on StackOverflow
 		//https://stackoverflow.com/questions/847185/convert-a-unix-timestamp-to-time-in-javascript
-		var date = new Date(unix * 1000);
+		var date = new Date(unix * 1);
+		
 		//if getMin is nums 0-9 then print it out like this 00-09
 		var min;
 		var hour;

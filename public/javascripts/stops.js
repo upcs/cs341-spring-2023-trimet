@@ -14,6 +14,8 @@ var stopsById = {};
 var stopsByOrder = [];
 
 class Stop {
+	
+
 	constructor(id) {
 		this.id = id;
 	}
@@ -22,6 +24,10 @@ class Stop {
 		this.desc = stopNode.getAttribute("desc");
 		this.routes = [];
 		this.routeButtons = [];
+
+		this.arrivalIds = [];
+		this.arrivalButtons = [];
+		
 
 		this.coords = [
 			parseFloat(stopNode.getAttribute("lat")),
@@ -59,6 +65,7 @@ class Stop {
 		this.routeButtons.push(routeButton);
 	}
 
+	
 	showMarker() {
 		this.marker.addTo(map);
 	}

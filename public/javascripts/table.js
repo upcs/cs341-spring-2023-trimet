@@ -139,7 +139,7 @@ function createRouteButtons() {
 				// When a direction stop button is clicked, show the stop.
 				routeDir.buttons[i].on("click", e => {
 					sidebarTabs.showTab("stops");
-					transportTabs.showTab("transport-0");
+					transportTabs.showTab("time-0");
 					showStop(routeDir.stops[i]);
 
 					// Hides given line as well as shows stop clicked on.

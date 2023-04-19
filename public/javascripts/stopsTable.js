@@ -81,6 +81,7 @@ function showStopPage() {
  * before taking the user to the routes pages if a route is clicked.
  */
 function showStop(stop) {
+	
 	hideAllLines();
 
 	// Show the transport page of the stops tab.
@@ -90,18 +91,26 @@ function showStop(stop) {
 	stop.showMarker();
 
 	// Empty the content of the list before working with it.
-	let transportElem = $("#transport-1-list");
+	let transportElem = $("#transport-list");
 	transportElem.children().detach();
+	let timeElem = $("#time-list");
+	timeElem.children().detach();
 
 	// Sets the name of the chosen transport (route).
 	$("#transport-chosen").text(stop.desc);
 
-	$("#transport-1-selector").text("Routes");
+	// Sets the names of the tabs available(after a stop is selected)
+	// It should be mentioned that Max and James don't know where the click event is registered for both 
+	// the Arrival Time's tab and the Routes tab, but it works. Do tell Max or James if you know:) 
+	$("#time-selector").text("Arrival Times");
+	$("#transport-selector").text("Routes");
 
-	// Adds all of the route buttons for a given stop to the list.
+	// Adds all of the route buttons for a given stop to the Routes list in the Stops tab.
 	for (let button of stop.routeButtons) {
 		transportElem.append(button);
 	}
+	//Calls function that populates the "Arrival Times" tab for a given stop.
+	addArrivalTimes(stop);
 }
 
 /**
@@ -125,7 +134,6 @@ function createStopButtons() {
 
 		// Add this stop's button to the sidebar.
 		stopsElem.append(stop.button);
-
 		// Loops through every route for a given stop and creates its button.
 		for (let i = 0; i < stop.routes.length; i++) {
 			stop.routeButtons[i].on("click", e => {
@@ -133,12 +141,116 @@ function createStopButtons() {
 				showRoute(stop.routes[i]);
 			});
 		}
+
 	}
 
 	// Since the list of buttons was changed, also re-update which ones are
 	// shown due to the search bar.
 	updateStopSearch();
 }
+
+
+/** 
+	This function takes a stop and populates its "arrivalButtons" array. These arrival buttons are what are shown under the "Arrival Times"
+	subtab in the Stops tab. It creates a button for each time a bus/max arrives at the given stop, and then appends 
+	the buttons onto the "Arrival Times" tab. Could possibly move function elsewhere, ask Vincent.
+	Since this is dynamicly fetching data, use "async" and "await". Ask Vincent if you need more information.
+*/
+async function addArrivalTimes(stop) {
+	let transportElem = $("#time-list");
+	//Fetches route id that is used in Trimet XML request.
+	let stopLocId = stop.id;
+	//console.log(stopLocId);
+
+	//Fetches data dynamically from Trimet's "arrivals" function, which returns
+	//all of the times that a bus/max will visit a given stop over the next hour. 
+	//Source: https://developer.trimet.org/ws_docs/arrivals2_ws.shtml
+
+	//id used: 9848 --> this is used as a baseline route id that i can test my bug against.
+	let xml = await fetchAppXml("https://developer.trimet.org/ws/v2/arrivals", {
+		locIDs: stopLocId,
+		json: false
+	});
+	//All of the main div elements, named "arrival" from the xml.
+	let arrivalTimes = xml.querySelectorAll("arrival");
+	
+	//for loop that iterates through array of arrival times. It creates the label for each stop, including
+	//the estimated time and the "shortSign". The shortSign is the closest thing that 
+	//the arrivalTimes xml call provides to the route #.
+	for (let i = 0; i < arrivalTimes.length; i++) {
+		let arrivalTime = arrivalTimes[i];
+		let description = arrivalTime.getAttribute("fullSign");
+		let routeID = arrivalTime.getAttribute("route");
+		let timeUnix = arrivalTime.getAttribute("estimated");
+
+		//Converts from string into an int. Watch out for this bug...
+		timeUnix = parseInt(timeUnix);
+		routeID = parseInt(routeID);
+
+		//estimated produces a time int that is "seconds since unix epoch", meaning it's huge.
+		//This is a conversion calculator. Taken and modified from alerts.js.
+		//source: https://stackoverflow.com/questions/847185/convert-a-unix-timestamp-to-time-in-javascript
+
+		var date = new Date(timeUnix);
+		//if getMin is nums 0-9 then print it out like this 00-09
+		var min = date.getMinutes();
+		var hour = date.getHours();
+		//for the unix to timestamp conversion
+		var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+		var am = true;//when false it is pm \
+		if(date.getMinutes() < 10){
+			min = '0' + date.getMinutes();
+			//console.log("new min: " + min);
+		}
+		if(date.getHours() == 0){
+			hour = 12;
+			am = true;
+		} 
+		//This if else could be useless, but im scared to remove it. Just leave it for a bit longer.pls
+		//  else if(date.getHours() < 10){
+		// 	hour = date.getHours();
+		// 	am = true;
+		// }
+		//if single digit add leading '0'
+		if(date.getHours() > 12){
+			hour = date.getHours() - 12;
+			am = false;//as in it is pm
+		}//convert to am/pm from 24 hr format
+		var time = date.getDate() + ' ' + 
+				months[date.getMonth()] + ', '+ 
+				hour + ':' + 
+				min;
+		//add am/pm to end of time
+		if(am){
+			time += " am";
+		} else {
+			time += " pm";
+		}
+		//Error handling. Handles trimet failing to produce expected time.
+		if(timeUnix == null){
+			time = "unknown arrival time";
+		}
+
+		//Creates the button then adds it to the array
+		let arrivalButton = $("<button>")
+			.text(description + ": " + time);
+		stop.arrivalIds[i] = routeID;
+
+		for (let j = 0; j < stop.routes.length; j++) {
+			if(stop.routes[j].id == routeID){
+				arrivalButton.on("click", e => {
+					sidebarTabs.showTab("routes");
+					showRoute(stop.routes[j]);
+				});
+			}
+		}	
+		stop.arrivalButtons.push(arrivalButton);
+	}
+	// Adds all of the arrival buttons to the arrival times list.
+	for (let arrbutton of stop.arrivalButtons) {
+		transportElem.append(arrbutton);
+	}
+}//addArrivalTimes
 
 // When the search bar is edited and enter is clicked, updates stop list with
 // relevant stops based on search entered.
