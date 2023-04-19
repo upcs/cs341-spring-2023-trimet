@@ -86,6 +86,7 @@ function showStop(stop) {
 
 	// Show the transport page of the stops tab.
 	stopPages.showTab("transport");
+	transportTabs.showTab("time");
 
 	// Shows given stop on the map
 	stop.showMarker();
@@ -179,6 +180,7 @@ async function addArrivalTimes(stop) {
 		let description = arrivalTime.getAttribute("fullSign");
 		let routeID = arrivalTime.getAttribute("route");
 		let timeUnix = arrivalTime.getAttribute("estimated");
+		//Since using parseInt turns the null into a nan, i save the original value here.
 		let isTimeUnixNull = timeUnix;
 
 		//Converts from string into an int. Watch out for this bug...
@@ -229,8 +231,6 @@ async function addArrivalTimes(stop) {
 		if(isTimeUnixNull == null){
 			time = "unknown arrival time";
 		}
-
-		
 
 		//Creates the button then adds it to the array
 		let arrivalButton = $("<button>")
