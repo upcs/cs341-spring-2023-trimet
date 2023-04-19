@@ -152,6 +152,7 @@ function createRouteButtons() {
 					route.selected = false;
 
 					sidebarTabs.showTab("stops");
+					transportTabs.showTab("time-0");
 					showStop(routeDir.stops[i]);
 
 					// Hides given line as well as shows stop clicked on.

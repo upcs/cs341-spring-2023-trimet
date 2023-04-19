@@ -34,6 +34,10 @@ class Stop {
     //list of buttons for the routes that go through a given stop
     this.routeButtons = [];
 
+		this.arrivalIds = [];
+		this.arrivalButtons = [];
+		
+
 		this.coords = [
 			parseFloat(stopNode.getAttribute("lat")),
 			parseFloat(stopNode.getAttribute("lng"))

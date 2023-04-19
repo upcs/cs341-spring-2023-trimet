@@ -132,7 +132,16 @@
 							</div>
 							<div id="transport-chosen"></div>
 						</div>
-						<div id="transport-list" class="item-list"></div>
+						<!-- Buttons to switch in between time and transport tabs-->
+						<div class="selector" data-tablist="stops-transport">
+							<button id="time-selector" class="special" data-tab="time">Arrival Time</button>
+							<button id="transport-selector" class="special" data-tab="transport">Routes</button>
+						</div>
+						<!-- List for displaying times of a stop and the routes that go through it-->
+						<div id="transport-lists" class="column-list tab-box" data-tablist="stops-transport">
+							<div id="time-list" class="item-list" data-tab="time"></div>
+							<div id="transport-list" class="item-list" data-tab="transport"></div>
+						</div>
 					</div>
 				</div>
 			</div>
