@@ -99,12 +99,6 @@ function showStop(stop) {
 	// Sets the name of the chosen transport (route).
 	$("#transport-chosen").text(stop.desc);
 
-	// Sets the names of the tabs available(after a stop is selected)
-	// It should be mentioned that Max and James don't know where the click event is registered for both 
-	// the Arrival Time's tab and the Routes tab, but it works. Do tell Max or James if you know:) 
-	$("#time-selector").text("Arrival Times");
-	$("#transport-selector").text("Routes");
-
 	// Adds all of the route buttons for a given stop to the Routes list in the Stops tab.
 	for (let button of stop.routeButtons) {
 		transportElem.append(button);
@@ -160,7 +154,6 @@ async function addArrivalTimes(stop) {
 	let transportElem = $("#time-list");
 	//Fetches route id that is used in Trimet XML request.
 	let stopLocId = stop.id;
-	//console.log(stopLocId);
 
 	//Fetches data dynamically from Trimet's "arrivals" function, which returns
 	//all of the times that a bus/max will visit a given stop over the next hour. 
@@ -173,6 +166,10 @@ async function addArrivalTimes(stop) {
 	});
 	//All of the main div elements, named "arrival" from the xml.
 	let arrivalTimes = xml.querySelectorAll("arrival");
+
+	//Clears the arrays so that it doesn't stack if you click on the same stop multiple times.
+	stop.arrivalIds = [];
+	stop.arrivalButtons = [];
 	
 	//for loop that iterates through array of arrival times. It creates the label for each stop, including
 	//the estimated time and the "shortSign". The shortSign is the closest thing that 
@@ -182,6 +179,7 @@ async function addArrivalTimes(stop) {
 		let description = arrivalTime.getAttribute("fullSign");
 		let routeID = arrivalTime.getAttribute("route");
 		let timeUnix = arrivalTime.getAttribute("estimated");
+		let isTimeUnixNull = timeUnix;
 
 		//Converts from string into an int. Watch out for this bug...
 		timeUnix = parseInt(timeUnix);
@@ -190,8 +188,9 @@ async function addArrivalTimes(stop) {
 		//estimated produces a time int that is "seconds since unix epoch", meaning it's huge.
 		//This is a conversion calculator. Taken and modified from alerts.js.
 		//source: https://stackoverflow.com/questions/847185/convert-a-unix-timestamp-to-time-in-javascript
-
+		//function to convert from unix epoch time to human readable.
 		var date = new Date(timeUnix);
+
 		//if getMin is nums 0-9 then print it out like this 00-09
 		var min = date.getMinutes();
 		var hour = date.getHours();
@@ -200,22 +199,22 @@ async function addArrivalTimes(stop) {
 		var am = true;//when false it is pm \
 		if(date.getMinutes() < 10){
 			min = '0' + date.getMinutes();
-			//console.log("new min: " + min);
 		}
-		if(date.getHours() == 0){
-			hour = 12;
-			am = true;
-		} 
 		//This if else could be useless, but im scared to remove it. Just leave it for a bit longer.pls
 		//  else if(date.getHours() < 10){
 		// 	hour = date.getHours();
 		// 	am = true;
 		// }
 		//if single digit add leading '0'
-		if(date.getHours() > 12){
+		if(date.getHours() >= 12){
 			hour = date.getHours() - 12;
 			am = false;//as in it is pm
 		}//convert to am/pm from 24 hr format
+		
+		if(date.getHours() == 0){
+			hour = 12;
+		} 
+
 		var time = date.getDate() + ' ' + 
 				months[date.getMonth()] + ', '+ 
 				hour + ':' + 
@@ -227,9 +226,11 @@ async function addArrivalTimes(stop) {
 			time += " pm";
 		}
 		//Error handling. Handles trimet failing to produce expected time.
-		if(timeUnix == null){
+		if(isTimeUnixNull == null){
 			time = "unknown arrival time";
 		}
+
+		
 
 		//Creates the button then adds it to the array
 		let arrivalButton = $("<button>")
@@ -239,6 +240,7 @@ async function addArrivalTimes(stop) {
 		for (let j = 0; j < stop.routes.length; j++) {
 			if(stop.routes[j].id == routeID){
 				arrivalButton.on("click", e => {
+					
 					sidebarTabs.showTab("routes");
 					showRoute(stop.routes[j]);
 				});
