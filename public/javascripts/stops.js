@@ -38,6 +38,9 @@ class Stop {
 			parseFloat(stopNode.getAttribute("lat")),
 			parseFloat(stopNode.getAttribute("lng"))
 		];
+		
+		this.selected = false;
+		this.zoomShown = false;
 
 		this.marker = L.circle(this.coords, {
 			radius: 5,
@@ -63,7 +66,7 @@ class Stop {
 			.text(this.desc);
 	}
   
-  //parent reference to all routes this stop is on
+	//parent reference to all routes this stop is on
 	constructParentRoute(route) {
 		this.routes.push(route);
 
@@ -72,14 +75,23 @@ class Stop {
 		this.routeButtons.push(routeButton);
 	}
 
-	//visualize stop marker on map
-	showMarker() {
-		this.marker.addTo(map);
+	isShown() {
+		let shown = this.selected || this.zoomShown;
+		for (let route of this.routes) {
+			if (route.isShown()) {
+				shown = true
+			}
+		}
+
+		return shown;
 	}
 
-	//remove stop marker from map
-	hideMarker() {
-		this.marker.remove();
+	updateShown() {
+		if (this.isShown()) {
+			this.marker.addTo(map);
+		} else {
+			this.marker.remove();
+		}
 	}
 }
 

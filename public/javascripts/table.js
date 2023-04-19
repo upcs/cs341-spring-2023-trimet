@@ -38,17 +38,21 @@ function updateRouteSearch() {
 	$("#routes-search-message").toggle(!found);
 }
 
-function hideAllLines() {
+function updateShownLines() {
 	for (let route of routesByOrder) {
-		route.hideLines();
-		route.stops.forEach(s => s.hideMarker());
+		route.updateShown();
 	}
 }
 
 function showAllRoutes() {
 	// Show the routes page of the routes tab and hide everything on the map.
 	routePages.showTab("routes");
-	hideAllLines();
+
+	for (let route of routesByOrder) {
+		route.selected = false;
+	}
+
+	updateShownLines();
 }
 
 function updatePinButton(route) {
@@ -72,15 +76,21 @@ function updatePinButton(route) {
 }
 
 function showRoute(route) {
-	// Hides any lines currently on the map
-	hideAllLines();
+	// Gets rid of all currently selected routes.
+	for (let routes of routesByOrder) {
+		routes.selected = false; 
+	}
+
+	route.selected = true;
 
 	// Show the dirs page of the routes tab.
 	routePages.showTab("dirs");
 
 	// Show this route's markers on the map.
-	route.showLines();
-	route.stops.forEach(s => s.showMarker());
+	updateShownLines();
+
+	// Centers and zooms in on the given route.
+	centerOnRoute(route);
 
 	// When we show directions, always show the first tab.
 	dirsTabs.showTab("dir-0");
@@ -138,12 +148,14 @@ function createRouteButtons() {
 			for (let i = 0; i < routeDir.stops.length; i++) {
 				// When a direction stop button is clicked, show the stop.
 				routeDir.buttons[i].on("click", e => {
+					//Route is no longer selected so it will now hide it.
+					route.selected = false;
+
 					sidebarTabs.showTab("stops");
 					showStop(routeDir.stops[i]);
 
 					// Hides given line as well as shows stop clicked on.
-					hideAllLines();
-					routeDir.stops[i].showMarker();
+					updateShownLines();
 				});
 			}
 		}
@@ -173,6 +185,7 @@ $("#routes-clear-search").on("click", e => {
 // Go back to the list of routes when the user clicks the back button.
 $("#dir-back").on("click", e => {
 	showAllRoutes();
+	checkSelectedVsZoom();
 });
 
 // When the direction tabs are clicked, scroll the lists back to the top.

@@ -46,7 +46,7 @@ class Route {
 		this.desc = routeNode.getAttribute("desc");
 		this.routeSubType = routeNode.getAttribute("routeSubType");
 
-		this.dirs = {};//list of directions (ex. north/south bound)
+		this.dirs = [];//list of directions (ex. north/south bound)
 		this.stops = [];//list of stops
 
 		//loops through each stop on this route
@@ -64,8 +64,9 @@ class Route {
 		//so we have a empty list instead of undefined 
 		this.lines = [];//list of all coordinate nodes
 		this.polylines = [];//list of leaflet map layers
-    
-    this.pinned = false;
+
+		this.pinned = false;
+		this.selected = false;
 	}
 
 	//adds the routes onto the map
@@ -106,15 +107,25 @@ class Route {
 			.text(this.desc);
 	}
 
-	//visualize route on map
-	showLines() {
-		this.polylines.forEach(p => p.addTo(map));
+	isShown() {
+		return this.selected || this.pinned;
 	}
 
-	//remove route from map
-	hideLines() {
-		this.polylines.forEach(p => p.remove());
+	// Updates routes shown on map based on whether a route is selected or pinned
+	updateShown() {
+		if (this.isShown()) {
+			this.polylines.forEach(p => p.addTo(map));
+		} else {
+			this.polylines.forEach(p => p.remove());
+		}
+
+		for (let dir of this.dirs) {
+			for (let stop of dir.stops) {
+				stop.updateShown();
+			}
+		}
 	}
+
 
 	pin() {
 		this.pinned = true;
