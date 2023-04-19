@@ -66,7 +66,7 @@ class Stop {
 			.text(this.desc);
 	}
   
-  //parent reference to all routes this stop is on
+	//parent reference to all routes this stop is on
 	constructParentRoute(route) {
 		this.routes.push(route);
 

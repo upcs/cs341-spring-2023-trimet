@@ -64,9 +64,9 @@ class Route {
 		//so we have a empty list instead of undefined 
 		this.lines = [];//list of all coordinate nodes
 		this.polylines = [];//list of leaflet map layers
-    
-    this.pinned = false;
-    this.selected = false;
+
+		this.pinned = false;
+		this.selected = false;
 	}
 
 	//adds the routes onto the map
@@ -111,7 +111,7 @@ class Route {
 		return this.selected || this.pinned;
 	}
 
-  // Updates routes shown on map based on whether a route is selected or pinned
+	// Updates routes shown on map based on whether a route is selected or pinned
 	updateShown() {
 		if (this.isShown()) {
 			this.polylines.forEach(p => p.addTo(map));
@@ -124,6 +124,7 @@ class Route {
 				stop.updateShown();
 			}
 		}
+	}
 
 
 	pin() {
