@@ -76,7 +76,8 @@ function showStopPage() {
 		stop.selected = false;
 	}
 
-	updateShownStops();
+	checkSelectedVsZoom();
+	//updateShownStops();
 }
 
 /**
@@ -95,7 +96,7 @@ function showStop(stop) {
 	stopPages.showTab("transport");
 
 	// Shows given stop on the map and centers map on it.
-	updateShownStops();
+	checkSelectedVsZoom();
 	centerOnMarker(stop.marker);
 
 	// Empty the content of the list before working with it.
@@ -142,7 +143,8 @@ function createStopButtons() {
 				sidebarTabs.showTab("routes");
 				showRoute(stop.routes[i]);
 
-				updateShownStops();
+				checkSelectedVsZoom();
+				//updateShownStops();
 			});
 		}
 
