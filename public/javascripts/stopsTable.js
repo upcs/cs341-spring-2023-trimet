@@ -57,15 +57,6 @@ function updateStopSearch() {
 }
 
 /**
- * Hides all stops on the map in case more than one are displayed at once.
- */
-function updateShownStops() {
-	for (stop of stopsByOrder) {
-		stop.updateShown();
-	}
-}
-
-/**
  * Shows the stop page and removes any markers that are currently on the map
  * for stops.
  */
@@ -77,7 +68,6 @@ function showStopPage() {
 	}
 
 	checkSelectedVsZoom();
-	//updateShownStops();
 }
 
 /**
@@ -144,7 +134,6 @@ function createStopButtons() {
 				showRoute(stop.routes[i]);
 
 				checkSelectedVsZoom();
-				//updateShownStops();
 			});
 		}
 
