@@ -153,6 +153,7 @@ function createStopButtons() {
 			// Hides any shown lines and any extra stops on the line. Also opens
 			// the sidebar tab for the clicked on stop
 			updateShownLines();
+			clearBuses(dotArr);
 			sidebarTabs.showTab("stops");
 			showStop(stop);
 
