@@ -95,12 +95,17 @@ function showAlertsDialog(json) {
 		var desc = alerts[i].desc;
 		//alert active at date/time
 		var unix = alerts[i].begin;
+		//Since using parseInt turns the null into a nan, i save the original value here.
+		let isUnixNull = unix;
+		unix = parseInt(unix);
+	
 		//unix conversion from shomrat/pitust on StackOverflow
 		//https://stackoverflow.com/questions/847185/convert-a-unix-timestamp-to-time-in-javascript
-		var date = new Date(unix * 1000);
+		var date = new Date(unix);
+		
 		//if getMin is nums 0-9 then print it out like this 00-09
-		var min;
-		var hour;
+		var min = date.getMinutes();
+		var hour = date.getHours();
 		var am = true;//when false it is pm
 		if(date.getMinutes() < 10){
 			min = '0' + date.getMinutes();
@@ -120,19 +125,29 @@ function showAlertsDialog(json) {
 				months[date.getMonth()] + ' '+ 
 				hour + ':' + 
 				min;
+	
 		//add am/pm to end of time
 		if(am){
 			time += " am";
 		} else {
 			time += " pm";
 		}
+		//error checking
+		if(isUnixNull == null){
+			table += "<tr class='style-table'>";
+			table += "<td> time not given </td>";
+			table += "</tr>";
 
+		}
+		else{
 		//create table format
-		table += "<tr class='style-table'>"
-		table += "<td>" + name + "</td>";
-		table += "<td style='min-width: 15ch;'>" + time + "</td>";
-		table += "<td>" + desc + "</td>";
-		table += "</tr>";
+			table += "<tr class='style-table'>";
+			table += "<td>" + name + "</td>";
+			table += "<td style='min-width: 15ch;'>" + time + "</td>";
+			table += "<td>" + desc + "</td>";
+			table += "</tr>";
+		}
+		
 	}
 
 	table += "</table>";
