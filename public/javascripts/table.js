@@ -157,6 +157,7 @@ function createRouteButtons() {
 
 					// Hides given line as well as shows stop clicked on.
 					updateShownLines();
+					clearBuses(dotArr);
 				});
 			}
 		}
@@ -187,6 +188,7 @@ $("#routes-clear-search").on("click", e => {
 $("#dir-back").on("click", e => {
 	showAllRoutes();
 	checkSelectedVsZoom();
+	clearBuses(dotArr);
 });
 
 // When the direction tabs are clicked, scroll the lists back to the top.
