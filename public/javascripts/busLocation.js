@@ -3,8 +3,9 @@
 //global variable that will allows us to clear the previous bus locations
 const dotArr = [];
 
-/**Access bus information and places markers on the map */
-
+/**
+ * Access bus information and places markers on the map 
+*/
 function createBuses(){
 	//arr to hold the bus markers
 	const arr =[];
