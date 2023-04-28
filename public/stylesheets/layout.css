@@ -18,6 +18,10 @@ main {
 	background-color: var(--header-border);
 }
 
+#home {
+	cursor: pointer;
+}
+
 #header {
 	grid-area: 1 / 2 / 2 / 3;
 
