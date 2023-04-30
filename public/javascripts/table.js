@@ -72,6 +72,7 @@ function updatePinButton(route) {
 	pinButton.on("click", e => {
 		route.togglePin();
 		updatePinButton(route);
+		colorFinder();
 	});
 }
 

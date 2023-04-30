@@ -73,8 +73,8 @@ class Route {
 	constructMapData(placemarkNode) {
 		let coordsNodes = placemarkNode.querySelectorAll("coordinates");
 
-		let typeNode = placemarkNode.querySelector("[name='type'] > value");
-		let color = markerColors[typeNode.textContent];
+		//Default color 
+		let color = markerColors[0];
 
 		//loops through route coordinate nodes
 		for (let coordsNode of coordsNodes) {
