@@ -106,15 +106,26 @@ function centerOnRoute(route) {
 	map.fitBounds(bounds);
 }
 
+/**
+ * Used for pinning routes. When a route gets pinned it provides it with a color in order
+ * to easily differentiate between pinned and selected routes. Also changes color back to
+ * default once a route becomes unpinned. 
+ */
 function colorFinder() {
-	let color = 1;
+	// Variable correlates to a given hashmap value.
+	// Starts at 1 due to fact that 0 is default color
+	var color = 1;
 
 	for (let route of routesByOrder) {
+		// Needed to prevent errors due to fact that the MAX Shuttle does not have polylines.
+		// It is the last route in the list so it doesn't effect the other routes.
 		if (route.id == "98") {
 			break;
 		}
 
-		if (route.polylines[0].options.color != "#7E7E7E") {
+		// If color exceeds hashmap color values, it resets it back to the first instance '1'.
+		// Otherwise it iterates up in order to prevent 2 pinned routes from having same color.
+		if (route.polylines[0].options.color != markerColors[0]) {
 			if (color >= 6) {
 				color = 1;
 			}
@@ -122,8 +133,16 @@ function colorFinder() {
 				color++;
 			}
 		}
+	}
+
+	// Can not be in loop above in order to let entire array get checked for pinned routes first.
+	for (let route of routesByOrder) {
+		if (route.id == "98") {
+			break;
+		}
 
 		if (route.selected) {
+			// Removes route and stops with default colors.
 			route.polylines.forEach(p => p.remove());
 			for (let dir of route.dirs) {
 				for (let stop of dir.stops) {
@@ -131,6 +150,7 @@ function colorFinder() {
 				}
 			}
 
+			// Sets route and stop's fill to color coordinating to hashmap value.
 			if (route.pinned) {
 				for (let polyline of route.polylines) {
 					polyline.setStyle({color: markerColors[color]});
@@ -139,7 +159,7 @@ function colorFinder() {
 				for (let stop of route.stops) {
 					stop.marker.setStyle({fillColor: markerColors[color]})
 				}
-			}
+			} // Used to change route and stops back to default color.
 			else {
 				for (let polyline of route.polylines) {
 					polyline.setStyle({color: markerColors[0]})
@@ -150,6 +170,9 @@ function colorFinder() {
 				}
 			}
 
+			// Displays the route and all its stops again after changing color.
+			// Must remove and add stops back in order to prevent route lines from
+			// overlapping the stops. 
 			route.polylines.forEach(p => p.addTo(map));
 			for (let dir of route.dirs) {
 				for (let stop of dir.stops) {
