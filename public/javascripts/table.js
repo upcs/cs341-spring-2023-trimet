@@ -141,6 +141,16 @@ function createRouteButtons() {
 			showRoute(route);
 		});
 
+		for (let polyline of route.polylines) {
+			polyline.bindPopup(route.desc);
+			polyline.on("mouseover", function(e) {
+				this.openPopup();
+			});
+			polyline.on("mouseout", function(e) {
+				this.closePopup();
+			});
+		}
+
 		// Add this route's button to the sidebar.
 		routesElem.append(route.button);
 

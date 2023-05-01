@@ -135,10 +135,18 @@ function colorFinder() {
 				for (let polyline of route.polylines) {
 					polyline.setStyle({color: markerColors[color]});
 				}
+
+				for (let stop of route.stops) {
+					stop.marker.setStyle({fillColor: markerColors[color]})
+				}
 			}
 			else {
 				for (let polyline of route.polylines) {
 					polyline.setStyle({color: markerColors[0]})
+				}
+
+				for (let stop of route.stops) {
+					stop.marker.setStyle({fillColor: markerColors["#000000"]})
 				}
 			}
 

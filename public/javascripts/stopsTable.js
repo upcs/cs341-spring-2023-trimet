@@ -143,6 +143,14 @@ function createStopButtons() {
 			});
 		}
 
+		stop.marker.bindPopup(stop.desc);
+		stop.marker.on("mouseover", function(e)  {
+			this.openPopup();
+		});
+		stop.marker.on("mouseout", function(e) {
+			this.closePopup();
+		});
+
 		stop.marker.on("click", e => {
 			for (let route of routesByOrder) {
 				route.selected = false;
