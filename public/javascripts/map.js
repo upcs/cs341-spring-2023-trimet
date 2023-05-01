@@ -114,23 +114,31 @@ function centerOnRoute(route) {
 function colorFinder() {
 	// Variable correlates to a given hashmap value.
 	// Starts at 1 due to fact that 0 is default color
-	let color = 1;
+	var color = 1;
 
 	for (let route of routesByOrder) {
 		// Needed to prevent errors due to fact that the MAX Shuttle does not have polylines.
+		// It is the last route in the list so it doesn't effect the other routes.
 		if (route.id == "98") {
 			break;
 		}
 
 		// If color exceeds hashmap color values, it resets it back to the first instance '1'.
 		// Otherwise it iterates up in order to prevent 2 pinned routes from having same color.
-		if (route.polylines[0].options.color != "#7E7E7E") {
+		if (route.polylines[0].options.color != markerColors[0]) {
 			if (color >= 6) {
 				color = 1;
 			}
 			else {
 				color++;
 			}
+		}
+	}
+
+	// Can not be in loop above in order to let entire array get checked for pinned routes first.
+	for (let route of routesByOrder) {
+		if (route.id == "98") {
+			break;
 		}
 
 		if (route.selected) {
