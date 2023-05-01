@@ -142,7 +142,7 @@ function createRouteButtons() {
 		});
 
 		for (let polyline of route.polylines) {
-			polyline.bindPopup(route.desc);
+			polyline.bindPopup(route.desc, {autoPan: false});
 			polyline.on("mouseover", function(e) {
 				this.openPopup();
 			});
