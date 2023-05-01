@@ -15,7 +15,6 @@ function createBuses(id){
 	let x = locs['resultSet']['vehicle'];
 
 	//fill the array with lat and longitude
-	//puts two values in array, hence the i+=2 above
 	for(let i = 0; i < (x.length); (i++)){
 		if(locs['resultSet']['vehicle'][i]['routeNumber'] == id){
 			//create circle and add to map
@@ -56,6 +55,5 @@ fastFetch.onFetch(data => {
 	}
 	for(let id of arr){
 		createBuses(id);
-		console.log(id);
 	}
 });
