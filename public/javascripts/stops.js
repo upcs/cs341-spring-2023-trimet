@@ -4,13 +4,13 @@
 //this may be changed in favor of coloring based on which
 //routes we are comparing instead of types of transit
 var markerColors = {
-	unknown: "#000000",
-	MAX: "#D81B60",
-	BUS: "#1E88E5",
-	CR: "#E0A905",
-	SC: "#00B307",
-	BSC: "#777777",
-	AT: "#8931EF",
+	0: "#7E7E7E",
+	1: "#D81B60",
+	2: "#1E88E5",
+	3: "#E0A905",
+	4: "#00B307",
+	5: "#5CFFFF",
+	6: "#8931EF",
 };
 
 var stopsById = {}; //hash table by id
@@ -56,12 +56,9 @@ class Stop {
 
 	//adds color to map icon
 	constructMapData(placemarkNode) {
-		let typeNode = placemarkNode.querySelector("[name='type'] > value");
-		let color = markerColors[typeNode.textContent];
-
 		this.marker.setStyle({
-			color: color,
-			fillColor: color,
+			color: "#000000",
+			fillColor: "#000000",
 		});
 	}
 

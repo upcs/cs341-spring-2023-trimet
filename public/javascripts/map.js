@@ -105,3 +105,59 @@ function centerOnRoute(route) {
 
 	map.fitBounds(bounds);
 }
+
+function colorFinder() {
+	let color = 1;
+
+	for (let route of routesByOrder) {
+		if (route.id == "98") {
+			break;
+		}
+
+		if (route.polylines[0].options.color != "#7E7E7E") {
+			if (color >= 6) {
+				color = 1;
+			}
+			else {
+				color++;
+			}
+		}
+
+		if (route.selected) {
+			route.polylines.forEach(p => p.remove());
+			for (let dir of route.dirs) {
+				for (let stop of dir.stops) {
+					stop.marker.remove();
+				}
+			}
+
+			if (route.pinned) {
+				for (let polyline of route.polylines) {
+					polyline.setStyle({color: markerColors[color]});
+				}
+
+				for (let stop of route.stops) {
+					stop.marker.setStyle({fillColor: markerColors[color]})
+				}
+			}
+			else {
+				for (let polyline of route.polylines) {
+					polyline.setStyle({color: markerColors[0]})
+				}
+
+				for (let stop of route.stops) {
+					stop.marker.setStyle({fillColor: markerColors["#000000"]})
+				}
+			}
+
+			route.polylines.forEach(p => p.addTo(map));
+			for (let dir of route.dirs) {
+				for (let stop of dir.stops) {
+					stop.marker.addTo(map);
+				}
+			}
+		}	
+	}
+
+	
+}

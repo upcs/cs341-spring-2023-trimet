@@ -72,6 +72,7 @@ function updatePinButton(route) {
 	pinButton.on("click", e => {
 		route.togglePin();
 		updatePinButton(route);
+		colorFinder();
 	});
 }
 
@@ -139,6 +140,16 @@ function createRouteButtons() {
 		route.button.on("click", e => {
 			showRoute(route);
 		});
+
+		for (let polyline of route.polylines) {
+			polyline.bindPopup(route.desc);
+			polyline.on("mouseover", function(e) {
+				this.openPopup();
+			});
+			polyline.on("mouseout", function(e) {
+				this.closePopup();
+			});
+		}
 
 		// Add this route's button to the sidebar.
 		routesElem.append(route.button);
