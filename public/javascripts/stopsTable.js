@@ -143,7 +143,7 @@ function createStopButtons() {
 			});
 		}
 
-		stop.marker.bindPopup(stop.desc);
+		stop.marker.bindPopup(stop.desc, {autoPan: false});
 		stop.marker.on("mouseover", function(e)  {
 			this.openPopup();
 		});
